@@ -6,7 +6,6 @@ import { GraduationCap } from "lucide-react";
 import { useState } from "react";
 import { ModeToggle } from "@/components/shared/ModeToggle";
 
-
 function useMobileMenu() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -43,7 +42,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                 />
               </div>
 
-              <span className="ui-title-brand">SkillBridge</span>
+              <span className="ui-title-brand">Skillnack</span>
             </div>
           </Link>
 
@@ -60,7 +59,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
               className="text-sm font-medium text-brand-ink dark:text-slate-100 hover:text-brand transition-colors"
               href="/#featured-tutors"
             >
-              Featured Tutor
+              Featured Tutors
             </Link>
 
             {!isLoggedIn && (
@@ -158,7 +157,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                   onClick={closeMobileMenu}
                   className="text-sm font-medium text-brand-ink dark:text-slate-100 hover:text-brand transition-colors py-2.5"
                 >
-                  Featured Tutor
+                  Featured Tutors
                 </Link>
 
                 {!isLoggedIn && (
