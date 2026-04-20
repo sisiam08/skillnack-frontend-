@@ -118,6 +118,28 @@ export default function TutorsClient({
     return () => window.clearTimeout(debounceId);
   }, [searchInput]);
 
+  useEffect(() => {
+    if (!isFilterOpen) {
+      document.body.style.overflow = "";
+      return;
+    }
+
+    document.body.style.overflow = "hidden";
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsFilterOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [isFilterOpen]);
+
   const clearAllFilters = () => {
     setSearchInput("");
     setFilters((prev) => ({
@@ -212,8 +234,11 @@ export default function TutorsClient({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setIsFilterOpen(!isFilterOpen)}
+            onClick={() => setIsFilterOpen((prev) => !prev)}
             className="rounded-lg"
+            aria-expanded={isFilterOpen}
+            aria-controls="mobile-filter-sidebar"
+            aria-label="Open filters"
           >
             {isFilterOpen ? (
               <X className="size-4" />
@@ -223,16 +248,43 @@ export default function TutorsClient({
           </Button>
         </div>
 
-        {/* Filters - Collapsible on Mobile */}
-        {isFilterOpen && (
+        {/* Filters - Sidebar Drawer on Mobile/Tablet */}
+        {isFilterOpen ? (
           <div className="lg:hidden">
-            <FiltersSidebar
-              filters={filters}
-              setFilters={setFilters}
-              categories={categories}
+            <button
+              type="button"
+              className="fixed inset-0 z-60 bg-black/45"
+              onClick={() => setIsFilterOpen(false)}
+              aria-label="Close filters"
             />
+
+            <aside
+              id="mobile-filter-sidebar"
+              className="fixed left-0 top-0 z-70 h-dvh w-[86vw] max-w-sm overflow-y-auto border-r border-border bg-background p-4 shadow-2xl"
+            >
+              <div className="mb-4 flex items-center justify-between border-b border-border pb-3">
+                <h2 className="text-sm font-semibold text-foreground">
+                  Filters
+                </h2>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsFilterOpen(false)}
+                  aria-label="Collapse filters"
+                >
+                  <X className="size-4" />
+                </Button>
+              </div>
+
+              <FiltersSidebar
+                filters={filters}
+                setFilters={setFilters}
+                categories={categories}
+              />
+            </aside>
           </div>
-        )}
+        ) : null}
 
         {/* Desktop Filters */}
         <div className="hidden lg:block">

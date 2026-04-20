@@ -69,30 +69,44 @@ export default function FiltersSidebar({
             onValueChange={(value) =>
               setFilters((prev: Filters) => ({
                 ...prev,
-                category: value,
+                category: value || undefined,
                 page: "1",
               }))
             }
             className="flex flex-col gap-2"
           >
-            {categories.map((cat: Categories) => (
-              <div
-                key={cat.id}
-                className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-primary/5 cursor-pointer"
-              >
-                <RadioGroupItem
-                  value={cat.name!}
-                  id={cat.id}
-                  className="border-primary/30 text-primary"
-                />
-                <Label
-                  htmlFor={cat.id}
-                  className="text-sm font-medium cursor-pointer text-slate-800 dark:text-slate-200"
+            {categories.map((cat: Categories, index) => {
+              const categoryName = cat.name?.trim();
+              if (!categoryName) return null;
+
+              const categoryId = `category-${cat.id ?? index}`;
+
+              return (
+                <div
+                  key={cat.id ?? categoryName}
+                  className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-primary/5 cursor-pointer"
+                  onClick={() =>
+                    setFilters((prev: Filters) => ({
+                      ...prev,
+                      category: categoryName,
+                      page: "1",
+                    }))
+                  }
                 >
-                  {cat.name}
-                </Label>
-              </div>
-            ))}
+                  <RadioGroupItem
+                    value={categoryName}
+                    id={categoryId}
+                    className="border-primary/30 text-primary"
+                  />
+                  <Label
+                    htmlFor={categoryId}
+                    className="text-sm font-medium cursor-pointer text-slate-800 dark:text-slate-200"
+                  >
+                    {categoryName}
+                  </Label>
+                </div>
+              );
+            })}
           </RadioGroup>
         </div>
 
@@ -140,12 +154,21 @@ export default function FiltersSidebar({
             onValueChange={(value) =>
               setFilters((prev: Filters) => ({
                 ...prev,
-                rating: value,
+                rating: value || undefined,
                 page: "1",
               }))
             }
           >
-            <div className="flex items-center gap-3 rounded-lg border border-primary/10 dark:border-primary/25 p-3 transition-colors hover:border-primary/40 cursor-pointer">
+            <div
+              className="flex items-center gap-3 rounded-lg border border-primary/10 dark:border-primary/25 p-3 transition-colors hover:border-primary/40 cursor-pointer"
+              onClick={() =>
+                setFilters((prev: Filters) => ({
+                  ...prev,
+                  rating: "5",
+                  page: "1",
+                }))
+              }
+            >
               <RadioGroupItem value="5" id="r1" />
               <Label
                 htmlFor="r1"
@@ -155,7 +178,16 @@ export default function FiltersSidebar({
               </Label>
             </div>
 
-            <div className="flex items-center gap-3 rounded-lg border border-primary/10 dark:border-primary/25 p-3 transition-colors hover:border-primary/40 cursor-pointer">
+            <div
+              className="flex items-center gap-3 rounded-lg border border-primary/10 dark:border-primary/25 p-3 transition-colors hover:border-primary/40 cursor-pointer"
+              onClick={() =>
+                setFilters((prev: Filters) => ({
+                  ...prev,
+                  rating: "4",
+                  page: "1",
+                }))
+              }
+            >
               <RadioGroupItem value="4" id="r2" />
               <Label
                 htmlFor="r2"
@@ -165,7 +197,16 @@ export default function FiltersSidebar({
               </Label>
             </div>
 
-            <div className="flex items-center gap-3 rounded-lg border border-primary/10 dark:border-primary/25 p-3 transition-colors hover:border-primary/40 cursor-pointer">
+            <div
+              className="flex items-center gap-3 rounded-lg border border-primary/10 dark:border-primary/25 p-3 transition-colors hover:border-primary/40 cursor-pointer"
+              onClick={() =>
+                setFilters((prev: Filters) => ({
+                  ...prev,
+                  rating: "3",
+                  page: "1",
+                }))
+              }
+            >
               <RadioGroupItem value="3" id="r3" />
               <Label
                 htmlFor="r3"
