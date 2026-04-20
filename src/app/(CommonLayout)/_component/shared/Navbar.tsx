@@ -28,7 +28,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
   const { mobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useMobileMenu();
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-brand-surface/80 dark:bg-brand-surface/80 backdrop-blur-md border-b border-brand/10 dark:border-brand/20">
+    <nav className="sticky top-0 z-50 w-full bg-[color-mix(in_oklab,var(--background)_86%,#fff7ed)]/90 dark:bg-[color-mix(in_oklab,var(--background)_88%,#1f130b)]/90 backdrop-blur-md border-b border-brand/10 dark:border-brand/20">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16 md:h-18">
           {/* Logo */}
@@ -49,14 +49,14 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6">
             <Link
-              className="text-sm font-medium text-brand-ink dark:text-slate-100 hover:text-brand transition-colors"
+              className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors"
               href="/"
             >
               Home
             </Link>
 
             <Link
-              className="text-sm font-medium text-brand-ink dark:text-slate-100 hover:text-brand transition-colors"
+              className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors"
               href="/#featured-tutors"
             >
               Featured Tutors
@@ -65,14 +65,14 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
             {!isLoggedIn && (
               <>
                 <Link
-                  className="text-sm font-medium text-brand-ink dark:text-slate-100 hover:text-brand transition-colors"
+                  className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors"
                   href="/login"
                 >
                   Login
                 </Link>
 
                 <Link
-                  className="text-sm font-medium text-brand-ink dark:text-slate-100 hover:text-brand transition-colors"
+                  className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors"
                   href="/register"
                 >
                   Register
@@ -81,7 +81,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                 <ModeToggle />
 
                 <Button className="bg-brand hover:bg-brand-strong text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105">
-                  <Link href="/find_tutors">Find Tutors</Link>
+                  <Link href="/find-tutors">Find Tutors</Link>
                 </Button>
               </>
             )}
@@ -89,14 +89,14 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
             {isLoggedIn && (
               <>
                 <Link
-                  className="text-sm font-medium text-brand-ink dark:text-slate-100 hover:text-brand transition-colors"
+                  className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors"
                   href="/dashboard"
                 >
                   Dashboard
                 </Link>
 
                 <Button className="bg-brand hover:bg-brand-strong text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105">
-                  <Link href="/find_tutors">Book Tutor</Link>
+                  <Link href="/find-tutors">Book Tutor</Link>
                 </Button>
               </>
             )}
@@ -147,7 +147,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                 <Link
                   href="/"
                   onClick={closeMobileMenu}
-                  className="text-sm font-medium text-brand-ink dark:text-slate-100 hover:text-brand transition-colors py-2.5"
+                  className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors py-2.5"
                 >
                   Home
                 </Link>
@@ -155,7 +155,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                 <Link
                   href="/#featured-tutors"
                   onClick={closeMobileMenu}
-                  className="text-sm font-medium text-brand-ink dark:text-slate-100 hover:text-brand transition-colors py-2.5"
+                  className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors py-2.5"
                 >
                   Featured Tutors
                 </Link>
@@ -165,7 +165,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                     <Link
                       href="/login"
                       onClick={closeMobileMenu}
-                      className="text-sm font-medium text-brand-ink dark:text-slate-100 hover:text-brand transition-colors py-2.5"
+                      className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors py-2.5"
                     >
                       Login
                     </Link>
@@ -173,13 +173,13 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                     <Link
                       href="/register"
                       onClick={closeMobileMenu}
-                      className="text-sm font-medium text-brand-ink dark:text-slate-100 hover:text-brand transition-colors py-2.5"
+                      className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors py-2.5"
                     >
                       Register
                     </Link>
 
                     <Button className="w-full bg-brand hover:bg-brand-strong text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105">
-                      <Link href="/find_tutors" onClick={closeMobileMenu}>
+                      <Link href="/find-tutors" onClick={closeMobileMenu}>
                         Find Tutors
                       </Link>
                     </Button>
@@ -190,13 +190,13 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                   <>
                     <Link
                       href="/dashboard"
-                      className="text-sm font-medium text-brand-ink dark:text-slate-100 hover:text-brand transition-colors py-2.5"
+                      className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors py-2.5"
                     >
                       Dashboard
                     </Link>
 
                     <Button className="w-full bg-brand hover:bg-brand-strong text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105">
-                      <Link href="/find_tutors" onClick={closeMobileMenu}>
+                      <Link href="/find-tutors" onClick={closeMobileMenu}>
                         Book Tutor
                       </Link>
                     </Button>

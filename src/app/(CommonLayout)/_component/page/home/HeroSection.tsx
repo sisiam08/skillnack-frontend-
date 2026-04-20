@@ -1,19 +1,16 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Sparkles } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-import skillImg from "../../../../../../public/skill.png";
-
 import { InteractiveServiceCards } from "./InteractiveServiceCards";
 
 export function HeroSection() {
   return (
     <section className="relative mx-auto max-w-7xl px-4 pb-24 pt-8 sm:px-6 lg:px-8 lg:pb-32 lg:pt-12">
-      <div className="grid items-center gap-14 lg:grid-cols-2">
+      <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-16">
         <div className="max-w-2xl flex flex-col justify-center lg:block">
           <Badge className="inline-flex items-center justify-center gap-2 border-orange-200 bg-orange-50 px-4 py-2 text-sm font-medium text-[#d94f0f] shadow-sm">
             <Sparkles className="h-4 w-4" />
@@ -67,19 +64,8 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="w-full">
-          <div className="hidden lg:block">
-            <InteractiveServiceCards />
-          </div>
-
-          <Card className="lg:hidden overflow-hidden rounded-[28px] border-border/80 bg-card shadow-[0_20px_60px_rgba(15,23,42,0.12)]">
-            <Image
-              src={skillImg}
-              alt="Skillnack tutoring preview"
-              className="h-auto w-full"
-              priority
-            />
-          </Card>
+        <div className="w-full lg:pl-2">
+          <InteractiveServiceCards />
         </div>
       </div>
     </section>

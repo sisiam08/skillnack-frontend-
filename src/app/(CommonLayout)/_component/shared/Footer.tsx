@@ -34,7 +34,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="mt-16 border-t border-gray-200 bg-brand-surface pb-10 pt-16 dark:border-gray-800 dark:bg-brand-surface">
+    <footer className="mt-16 border-t border-brand/10 bg-[color-mix(in_oklab,var(--background)_88%,#fff7ed)] pb-10 pt-16 dark:border-brand/25 dark:bg-[color-mix(in_oklab,var(--background)_90%,#1f130b)]">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
           <div className="space-y-4">
@@ -49,7 +49,7 @@ export default function Footer() {
               <span className="ui-title-brand">Skillnack</span>
             </Link>
 
-            <p className="text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+            <p className="text-sm leading-relaxed text-muted-foreground">
               The world&apos;s leading marketplace for 1-on-1 expert tutoring.
               Master any skill with personal guidance.
             </p>
@@ -57,10 +57,10 @@ export default function Footer() {
 
           {navLinks.map((section) => (
             <div key={section.title}>
-              <h4 className="mb-5 text-sm font-bold text-brand-ink dark:text-white">
+              <h4 className="mb-5 text-sm font-bold text-brand-ink dark:text-brand-ink">
                 {section.title}
               </h4>
-              <ul className="flex flex-col gap-3 text-sm text-gray-500 dark:text-gray-400">
+              <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
                 {section.links.map(({ label, href }) => (
                   <li key={label}>
                     <Link
@@ -77,8 +77,8 @@ export default function Footer() {
         </div>
 
         <div className="mt-12">
-          <Separator className="bg-gray-200 dark:bg-gray-800" />
-          <div className="flex items-center justify-center pt-8 text-xs text-gray-500 md:flex-row dark:text-gray-400">
+          <Separator className="bg-brand/15 dark:bg-brand/25" />
+          <div className="flex items-center justify-center pt-8 text-xs text-muted-foreground md:flex-row">
             <p>&copy; {currentYear} Skillnack. All rights reserved.</p>
           </div>
         </div>
