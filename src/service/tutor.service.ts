@@ -48,4 +48,23 @@ export const TutorService = {
       };
     }
   },
+
+  getTutorById: async function (id: string) {
+    try {
+      const res = await fetch(`${API_URL}/tutors/${id}`);
+
+      const data = await res.json();
+
+      if (!res.ok || !data?.success) {
+        return {
+          data: null,
+          error: { message: data?.message || "Failed to get tutor by id!" },
+        };
+      }
+
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error: { message: "Something went wrong!" } };
+    }
+  },
 };

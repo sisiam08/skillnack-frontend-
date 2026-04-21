@@ -11,3 +11,8 @@ export const getAllTutors = async (
 
   return { data, error };
 };
+
+export const getTutorById = async (id: string) => {
+  const { data, error } = await TutorService.getTutorById(id);
+  return { data, error };
+};

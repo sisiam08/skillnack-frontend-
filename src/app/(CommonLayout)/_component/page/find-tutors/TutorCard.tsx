@@ -92,7 +92,7 @@ export default function TutorCard({
             </span>
           </div>
 
-          <Link href={`/find_tutors/${tutor.id}`}>
+          <Link href={`/find-tutors/${tutor.id}`}>
             <Button
               size="sm"
               className="h-8 rounded-lg px-3 text-xs font-semibold bg-[#ec5b13] hover:bg-[#d94f0f]"
