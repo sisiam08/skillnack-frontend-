@@ -53,20 +53,36 @@ export default function LoginForm() {
   // };
 
   const handleEmailVerification = async () => {
-    await authClient.sendVerificationEmail({
-      email: verificationEmail,
-      callbackURL: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/login`,
-    });
+    setVerificationLoading(true);
+    const toastId = toast.loading("Sending verification email...");
+
+    try {
+      await authClient.sendVerificationEmail({
+        email: verificationEmail,
+        callbackURL: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/login`,
+      });
+
+      toast.success("Verification email sent! Please check your inbox.", {
+        id: toastId,
+      });
+    } catch (error) {
+      toast.error("Failed to send verification email. Please try again.", {
+        id: toastId,
+      });
+    } finally {
+      setVerificationLoading(false);
+    }
   };
 
   const handleRequestResetPassword = async (email: string) => {
     await authClient.requestPasswordReset({
       email: email,
-      redirectTo: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/reset_password`,
+      redirectTo: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/reset-password`,
     });
   };
 
   const [loading, setLoading] = useState(false);
+  const [verificationLoading, setVerificationLoading] = useState(false);
 
   const [showVerifyButton, setShowVerifyButton] = useState(false);
   const [verificationEmail, setVerificationEmail] = useState("");
@@ -90,7 +106,6 @@ export default function LoginForm() {
           email: value.email,
           password: value.password,
         });
-
 
         if (error?.code === "EMAIL_NOT_VERIFIED") {
           toast.warning("Please verify your email first!", { id: toastId });
@@ -331,9 +346,12 @@ export default function LoginForm() {
               <Button
                 type="button"
                 onClick={handleEmailVerification}
-                className="bg-transparent p-0 text-primary hover:bg-transparent hover:underline shadow-none"
+                disabled={verificationLoading}
+                className="bg-transparent p-0 text-primary hover:bg-transparent hover:underline shadow-none disabled:opacity-50"
               >
-                Resend Verification Email
+                {verificationLoading
+                  ? "Sending..."
+                  : "Resend Verification Email"}
               </Button>
             )}
             {/* <p className="text-sm">or</p>
@@ -350,7 +368,7 @@ export default function LoginForm() {
                 Don't have an account?
                 <Link
                   className="text-brand-strong hover:text-brand-strong font-bold hover:underline ml-1"
-                  href="/register"
+                  href="/signup"
                 >
                   Register
                 </Link>

@@ -17,7 +17,6 @@ export const UserService = {
 
       const session = await res.json();
 
-      console.log("Session in service: ", session);
 
       if (session == null) {
         return {

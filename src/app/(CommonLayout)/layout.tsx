@@ -8,7 +8,6 @@ export default async function CommonLayout({
   children: React.ReactNode;
 }) {
   const session = await UserService.getSession();
-  console.log("Session in layout: ", session);
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-200">
       <Navbar isLoggedIn={!!session.data} />

@@ -2,7 +2,7 @@ import { CategoryService } from "@/service/category.service";
 import { TutorService } from "@/service/tutor.service";
 import { PaginationType, TutorProfile } from "@/types";
 
-import TutorsClient from "./TutorsClient";
+import TutorsClient from "../_component/page/find-tutors/TutorsClient";
 
 const FALLBACK_PAGINATION: PaginationType = {
   totalData: 0,

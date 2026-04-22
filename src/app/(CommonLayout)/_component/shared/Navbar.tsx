@@ -73,7 +73,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
 
                 <Link
                   className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors"
-                  href="/register"
+                  href="/signup"
                 >
                   Register
                 </Link>
@@ -171,7 +171,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                     </Link>
 
                     <Link
-                      href="/register"
+                      href="/signup"
                       onClick={closeMobileMenu}
                       className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors py-2.5"
                     >
