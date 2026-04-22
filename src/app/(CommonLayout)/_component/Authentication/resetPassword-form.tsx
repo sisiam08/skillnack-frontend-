@@ -84,14 +84,14 @@ export default function ResetPasswordForm() {
   });
 
   return (
-    <Card className="mx-auto my-6 w-full max-w-xl">
+    <Card className="mx-auto my-6 w-full max-w-xl rounded-2xl border border-border/70 bg-card/80 shadow-sm">
       {passwordReset ? (
         <>
           <CardHeader>
             <CardTitle className="ui-title-auth mb-2">
               Password Reset Successful
             </CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-400">
+            <CardDescription className="text-muted-foreground">
               Your password has been successfully reset
             </CardDescription>
           </CardHeader>
@@ -101,7 +101,7 @@ export default function ResetPasswordForm() {
               <div className="mx-auto w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
                 <KeyRound className="size-8 text-green-600 dark:text-green-400" />
               </div>
-              <p className="text-slate-600 dark:text-slate-400">
+              <p className="text-muted-foreground">
                 You can now log in with your new password
               </p>
             </div>
@@ -109,7 +109,7 @@ export default function ResetPasswordForm() {
 
           <CardFooter className="flex flex-col gap-5 justify-end">
             <Link href="/login" className="w-full">
-              <Button className="w-full bg-brand hover:bg-brand-strong text-white font-bold rounded-xl shadow-lg shadow-primary/20">
+              <Button className="w-full rounded-xl bg-brand text-white shadow-sm hover:bg-brand-strong">
                 Go to Login
               </Button>
             </Link>
@@ -118,10 +118,8 @@ export default function ResetPasswordForm() {
       ) : (
         <>
           <CardHeader>
-            <CardTitle className="ui-title-auth mb-2">
-              Reset Password
-            </CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-400">
+            <CardTitle className="ui-title-auth mb-2">Reset Password</CardTitle>
+            <CardDescription className="text-muted-foreground">
               Enter your new password below
             </CardDescription>
           </CardHeader>
@@ -149,7 +147,7 @@ export default function ResetPasswordForm() {
                           New Password
                         </FieldLabel>
                         <div className="relative">
-                          <Lock className="absolute size-5 left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+                          <Lock className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                           <Input
                             type="password"
                             id={field.name}
@@ -157,7 +155,7 @@ export default function ResetPasswordForm() {
                             value={field.state.value}
                             placeholder="••••••••"
                             onChange={(e) => field.handleChange(e.target.value)}
-                            className="pl-10 py-3 bg-slate-50 dark:bg-slate-800 rounded-xl"
+                            className="rounded-xl border-input bg-background py-4 pl-10 text-foreground"
                           />
                         </div>
                         {isInvalid && (
@@ -183,7 +181,7 @@ export default function ResetPasswordForm() {
                           Confirm New Password
                         </FieldLabel>
                         <div className="relative">
-                          <Lock className="absolute size-5 left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+                          <Lock className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                           <Input
                             type="password"
                             id={field.name}
@@ -191,7 +189,7 @@ export default function ResetPasswordForm() {
                             value={field.state.value}
                             placeholder="••••••••"
                             onChange={(e) => field.handleChange(e.target.value)}
-                            className="pl-10 py-3 bg-slate-50 dark:bg-slate-800 rounded-xl"
+                            className="rounded-xl border-input bg-background py-4 pl-10 text-foreground"
                           />
                         </div>
                         {isInvalid && (
@@ -210,16 +208,16 @@ export default function ResetPasswordForm() {
               form="reset-password"
               type="submit"
               disabled={loading}
-              className="w-full bg-brand hover:bg-brand-strong text-white font-bold rounded-xl shadow-lg shadow-primary/20 disabled:opacity-50"
+              className="w-full py-4 rounded-xl bg-brand text-white shadow-sm hover:bg-brand-strong disabled:opacity-50"
             >
               {loading ? "Resetting..." : "Reset Password"}
             </Button>
 
             <div className="text-center">
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-muted-foreground">
                 Remember your password?
                 <Link
-                  className="text-brand-strong hover:text-brand-strong font-bold hover:underline ml-1"
+                  className="ml-1 font-bold text-brand hover:text-brand-strong hover:underline"
                   href="/login"
                 >
                   Login
@@ -232,4 +230,3 @@ export default function ResetPasswordForm() {
     </Card>
   );
 }
-

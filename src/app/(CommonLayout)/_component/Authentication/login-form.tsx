@@ -132,8 +132,9 @@ export default function LoginForm() {
       }
     },
   });
+
   return (
-    <Card className="mx-auto my-6 w-full max-w-xl">
+    <Card className="mx-auto my-6 w-full max-w-xl rounded-2xl border border-border/70 bg-card/80 shadow-sm ">
       {showResetPassword ? (
         <>
           <CardHeader>
@@ -144,7 +145,7 @@ export default function LoginForm() {
                 setResetEmailSent(false);
                 setResetPasswordEmail("");
               }}
-              className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-brand transition-colors mb-4 w-fit"
+              className="mb-4 flex w-fit items-center gap-2 text-muted-foreground transition-colors hover:text-brand"
             >
               <ArrowLeft className="size-4" />
               <span className="text-sm">Back to login</span>
@@ -152,7 +153,7 @@ export default function LoginForm() {
             <CardTitle className="ui-title-auth mb-2">
               Forgot Password?
             </CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-400">
+            <CardDescription className="text-muted-foreground">
               {resetEmailSent
                 ? "Check your email for password reset instructions"
                 : "Enter your email address and we'll send you a link to reset your password"}
@@ -165,13 +166,13 @@ export default function LoginForm() {
                 <div className="mx-auto w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
                   <Mail className="size-8 text-green-600 dark:text-green-400" />
                 </div>
-                <p className="text-slate-600 dark:text-slate-400">
+                <p className="text-muted-foreground">
                   We've sent a password reset link to{" "}
                   <span className="font-semibold text-brand">
                     {resetPasswordEmail}
                   </span>
                 </p>
-                <p className="text-sm text-slate-500 dark:text-slate-500">
+                <p className="text-sm text-muted-foreground">
                   Didn't receive the email? Check your spam folder or{" "}
                   <button
                     type="button"
@@ -199,7 +200,7 @@ export default function LoginForm() {
                       Email
                     </FieldLabel>
                     <div className="relative">
-                      <Mail className="absolute size-5 left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+                      <Mail className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                       <Input
                         type="email"
                         id="reset-password-email"
@@ -207,7 +208,7 @@ export default function LoginForm() {
                         value={resetPasswordEmail}
                         placeholder="example@gmail.com"
                         onChange={(e) => setResetPasswordEmail(e.target.value)}
-                        className="pl-10 py-3 bg-slate-50 dark:bg-slate-800 rounded-xl"
+                        className="rounded-xl border-input bg-background py-4 pl-10 text-foreground"
                         required
                       />
                     </div>
@@ -216,7 +217,7 @@ export default function LoginForm() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-brand hover:bg-brand-strong text-white font-bold rounded-xl shadow-lg shadow-primary/20"
+                  className="w-full py-4 rounded-xl bg-brand text-white shadow-sm hover:bg-brand-strong"
                 >
                   Send Reset Link
                 </Button>
@@ -226,19 +227,19 @@ export default function LoginForm() {
 
           <CardFooter className="flex flex-col gap-5 justify-end">
             <div className="text-center">
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-muted-foreground">
                 Remember your password?
-                <button
+                <Button
                   type="button"
                   onClick={() => {
                     setShowResetPassword(false);
                     setResetEmailSent(false);
                     setResetPasswordEmail("");
                   }}
-                  className="text-brand-strong hover:text-brand-strong font-bold hover:underline ml-1"
+                  className="font-bold text-brand text-sm bg-transparent hover:bg-transparent hover:text-brand-strong hover:underline"
                 >
                   Login
-                </button>
+                </Button>
               </p>
             </div>
           </CardFooter>
@@ -247,7 +248,7 @@ export default function LoginForm() {
         <>
           <CardHeader>
             <CardTitle className="ui-title-auth mb-2">Welcome back</CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-400">
+            <CardDescription className="text-muted-foreground">
               Fill in your details to learn more skills
             </CardDescription>
           </CardHeader>
@@ -271,7 +272,7 @@ export default function LoginForm() {
                       <Field>
                         <FieldLabel htmlFor={field.name}>Email</FieldLabel>
                         <div className="relative">
-                          <Mail className="absolute size-5 left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+                          <Mail className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                           <Input
                             type="email"
                             id={field.name}
@@ -279,7 +280,7 @@ export default function LoginForm() {
                             value={field.state.value}
                             placeholder="example@gmail.com"
                             onChange={(e) => field.handleChange(e.target.value)}
-                            className="pl-10 py-3 bg-slate-50 dark:bg-slate-800 rounded-xl"
+                            className="rounded-xl border-input bg-background py-4 pl-10 text-foreground"
                           />
                         </div>
 
@@ -305,13 +306,13 @@ export default function LoginForm() {
                           <button
                             type="button"
                             onClick={() => setShowResetPassword(true)}
-                            className="text-sm text-brand-strong hover:text-brand-strong hover:underline"
+                            className="text-sm text-brand hover:text-brand-strong hover:underline"
                           >
                             Forgot Password?
                           </button>
                         </div>
                         <div className="relative">
-                          <Lock className="absolute size-5 left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+                          <Lock className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                           <Input
                             type="password"
                             id={field.name}
@@ -319,7 +320,7 @@ export default function LoginForm() {
                             value={field.state.value}
                             placeholder="••••••••"
                             onChange={(e) => field.handleChange(e.target.value)}
-                            className="pl-10 py-3 bg-slate-50 dark:bg-slate-800 rounded-xl"
+                            className="rounded-xl border-input bg-background py-4 pl-10 text-foreground"
                           />
                         </div>
                         {isInvalid && (
@@ -338,7 +339,7 @@ export default function LoginForm() {
               form="sign-up"
               type="submit"
               disabled={loading}
-              className="w-full bg-brand hover:bg-brand-strong text-white font-bold rounded-xl shadow-lg shadow-primary/20 disabled:opacity-50"
+              className="w-full py-4 rounded-xl bg-brand text-white shadow-sm hover:bg-brand-strong disabled:opacity-50"
             >
               {loading ? "Logging..." : "Login"}
             </Button>
@@ -347,7 +348,7 @@ export default function LoginForm() {
                 type="button"
                 onClick={handleEmailVerification}
                 disabled={verificationLoading}
-                className="bg-transparent p-0 text-primary hover:bg-transparent hover:underline shadow-none disabled:opacity-50"
+                className="bg-transparent p-0 text-brand shadow-none hover:bg-transparent hover:underline disabled:opacity-50"
               >
                 {verificationLoading
                   ? "Sending..."
@@ -364,10 +365,10 @@ export default function LoginForm() {
             </Button> */}
 
             <div className="mt-8 text-center">
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-muted-foreground">
                 Don't have an account?
                 <Link
-                  className="text-brand-strong hover:text-brand-strong font-bold hover:underline ml-1"
+                  className="ml-1 font-bold text-brand hover:text-brand-strong hover:underline"
                   href="/signup"
                 >
                   Register

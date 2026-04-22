@@ -112,10 +112,10 @@ export default function SignupForm() {
   const passwordsMatch =
     passwordValue.length > 0 && passwordValue === confirmPasswordValue;
   return (
-    <Card className="w-full max-w-xl mx-auto rounded-2xl lg:mx-0 lg:max-w-none lg:rounded-none lg:rounded-r-2xl">
+    <Card className="mx-auto w-full max-w-xl rounded-2xl border border-border/70 bg-card/80 shadow-sm lg:mx-0 lg:max-w-none lg:rounded-none lg:rounded-r-2xl">
       <CardHeader>
         <CardTitle className="ui-title-auth mb-2">Create Account</CardTitle>
-        <CardDescription className="text-slate-600 dark:text-slate-400">
+        <CardDescription className="text-muted-foreground">
           Fill in your details to get started
         </CardDescription>
       </CardHeader>
@@ -147,7 +147,7 @@ export default function SignupForm() {
                       onValueChange={(value) =>
                         field.handleChange(value as UserRole)
                       }
-                      className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-primary/5"
+                      className="flex rounded-xl border border-input bg-background p-1"
                     >
                       <ToggleGroupItem
                         value={UserRole.STUDENT}
@@ -184,7 +184,7 @@ export default function SignupForm() {
                   <Field>
                     <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
                     <div className="relative">
-                      <User className="absolute size-5 left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+                      <User className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                       <Input
                         type="text"
                         id={field.name}
@@ -192,7 +192,7 @@ export default function SignupForm() {
                         value={field.state.value}
                         placeholder="Enter your full name"
                         onChange={(e) => field.handleChange(e.target.value)}
-                        className="pl-10 py-3 bg-slate-50 dark:bg-slate-800 rounded-xl"
+                        className="rounded-xl border-input bg-background py-4 pl-10 text-foreground"
                       />
                     </div>
                     {isInvalid && (
@@ -216,7 +216,7 @@ export default function SignupForm() {
                   <Field>
                     <FieldLabel htmlFor={field.name}>Email</FieldLabel>
                     <div className="relative">
-                      <Mail className="absolute size-5 left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+                      <Mail className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                       <Input
                         type="email"
                         id={field.name}
@@ -224,7 +224,7 @@ export default function SignupForm() {
                         value={field.state.value}
                         placeholder="example@gmail.com"
                         onChange={(e) => field.handleChange(e.target.value)}
-                        className="pl-10 py-3 bg-slate-50 dark:bg-slate-800 rounded-xl"
+                        className="rounded-xl border-input bg-background py-4 pl-10 text-foreground"
                       />
                     </div>
                     {isInvalid && (
@@ -248,7 +248,7 @@ export default function SignupForm() {
                   <Field>
                     <FieldLabel htmlFor={field.name}>Password</FieldLabel>
                     <div className="relative">
-                      <Lock className="absolute size-5 left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+                      <Lock className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                       <Input
                         type="password"
                         id={field.name}
@@ -260,7 +260,7 @@ export default function SignupForm() {
                           field.handleChange(v);
                           setPasswordValue(v);
                         }}
-                        className="pl-10 py-3 bg-slate-50 dark:bg-slate-800 rounded-xl"
+                        className="rounded-xl border-input bg-background py-4 pl-10 text-foreground"
                       />
                     </div>
                     {isInvalid && (
@@ -284,7 +284,7 @@ export default function SignupForm() {
                       Confirm Password
                     </FieldLabel>
                     <div className="relative">
-                      <Lock className="absolute size-5 left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl" />
+                      <Lock className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                       <Input
                         type="password"
                         id={field.name}
@@ -296,7 +296,7 @@ export default function SignupForm() {
                           field.handleChange(v);
                           setConfirmPasswordValue(v);
                         }}
-                        className="pl-10 py-3 bg-slate-50 dark:bg-slate-800 rounded-xl"
+                        className="rounded-xl border-input bg-background py-4 pl-10 text-foreground"
                       />
                     </div>
                     {isInvalid && (
@@ -314,7 +314,7 @@ export default function SignupForm() {
           form="sign-up"
           type="submit"
           disabled={loading || !passwordsMatch}
-          className="w-full bg-brand hover:bg-brand-strong text-white font-bold rounded-xl shadow-lg shadow-primary/20 disabled:opacity-50"
+          className="w-full py-4 rounded-xl bg-brand text-white shadow-sm hover:bg-brand-strong disabled:opacity-50"
         >
           {loading ? "Verification mail sending..." : "Create Account"}
         </Button>
@@ -328,13 +328,13 @@ export default function SignupForm() {
         </Button> */}
 
         <div className="mt-8 text-center">
-          <p className="text-sm text-slate-600 dark:text-slate-400">
+          <p className="text-sm text-muted-foreground">
             Already have an account?
             <Link
               className="text-brand hover:text-brand-strong font-bold hover:underline ml-1"
               href="/login"
             >
-              Log in
+              Login
             </Link>
           </p>
         </div>
