@@ -26,6 +26,7 @@ import {
 import { toast } from "@/components/ui/sonner";
 import { convertInto12h } from "@/helpers/TimeHelpers";
 import { AvailableSlotType, SlotType } from "@/types";
+import { redirect, useRouter } from "next/navigation";
 
 const DURATION_OPTIONS = [60, 120, 180];
 
@@ -48,6 +49,7 @@ export default function TutorBookingPanel({
   tutorId,
   hourlyRate,
 }: TutorBookingPanelProps) {
+  const router = useRouter();
   const [availableSlots, setAvailableSlots] =
     useState<AvailableSlotType | null>(null);
 
@@ -162,7 +164,21 @@ export default function TutorBookingPanel({
         return;
       }
 
-      toast.success("Session booked successfully", { id: toastId });
+      console.log("Booking response: ", response);
+
+      // redirect to payment page
+      router.push(response.data.data.paymentUrl);
+
+      if (!response.data.data.paymentUrl) {
+        toast.error("Failed to initiate payment", {
+          id: toastId,
+        });
+        return;
+      }
+
+      if (response.data.data.paymentUrl) {
+        toast.success("Session booked successfully", { id: toastId });
+      }
       setSelectedDate("");
       setSelectedDuration("");
       setSelectedSlot(null);

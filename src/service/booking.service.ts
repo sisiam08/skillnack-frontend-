@@ -8,6 +8,8 @@ const API_URL = env.API_URL;
 
 export const BookingService = {
   createBooking: async (tutorId: string, bookingData: BookingSlot) => {
+
+    console.log();
     try {
       const cookieStore = await cookies();
       const res = await fetch(`${API_URL}/bookings`, {

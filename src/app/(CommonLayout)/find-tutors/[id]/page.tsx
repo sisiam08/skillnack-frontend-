@@ -1,13 +1,15 @@
 import Image from "next/image";
 import { TutorService } from "@/service/tutor.service";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { TutorProfile } from "@/types";
 
 import TutorBookingPanel from "../../_component/page/find-tutors/id/TutorBookingPanel";
-import TutorEngagementSection from "../../_component/page/find-tutors/id/TutorEngagementSection";
 
 import defaultImage from "../../../../../public/default-avatar-profile.jpg";
+import { AvailabilityService } from "@/service/availability.service";
+import { ReviewService } from "@/service/review.service";
+import Availabilities from "@/components/shared/Availabilities";
+import Reviews from "../../_component/page/find-tutors/id/Reviews";
 
 export const revalidate = 300;
 
@@ -27,6 +29,18 @@ export default async function TutorProfileDetailPage({
     tutorResponse?.data?.success ? tutorResponse.data.data : null
   ) as TutorProfile | null;
 
+  const [availabilityResponse, reviewsResponse] = await Promise.all([
+    AvailabilityService.getAvailability(tutorId),
+    ReviewService.getAllReviewsForTutorProfile(tutorId),
+  ]);
+
+  const availabilities = availabilityResponse?.data?.success
+    ? availabilityResponse.data.data
+    : [];
+  const reviews = reviewsResponse?.data?.success
+    ? reviewsResponse.data.data
+    : [];
+
   const avgRating =
     tutorDetails?.totalReviews && tutorDetails?.totalRating
       ? Number(
@@ -44,11 +58,11 @@ export default async function TutorProfileDetailPage({
       ].filter(Boolean) as string[],
     ),
   ).slice(0, 4);
-  
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-[linear-gradient(180deg,rgba(236,91,19,0.12)_0%,transparent_30%),linear-gradient(180deg,var(--background),color-mix(in_oklab,var(--background)_86%,#f9fafb)_65%,var(--background))] pb-28 pt-8 lg:pb-14">
       <div className="relative mx-auto w-full max-w-7xl px-4 ">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_390px]">
+        <div className="grid space-y-6 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_390px]">
           <section className="space-y-6">
             <Card className="overflow-hidden rounded-2xl border border-border/70 bg-card/80 shadow-sm">
               <CardContent className="p-5 md:p-6">
@@ -120,7 +134,11 @@ export default async function TutorProfileDetailPage({
               </CardContent>
             </Card>
 
-            <TutorEngagementSection tutorId={tutorId} avgRating={avgRating} />
+            <Availabilities
+              availabilities={availabilities}
+              isTutorView={false}
+              className="rounded-2xl border border-border/70 bg-card/80 text-foreground"
+            />
           </section>
 
           <TutorBookingPanel
@@ -128,6 +146,7 @@ export default async function TutorProfileDetailPage({
             hourlyRate={tutorDetails?.hourlyRate ?? 0}
           />
         </div>
+        <Reviews reviews={reviews} avgRating={avgRating} />
       </div>
     </main>
   );
