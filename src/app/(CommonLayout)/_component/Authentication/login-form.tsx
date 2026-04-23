@@ -22,7 +22,6 @@ import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { toast } from "@/components/ui/sonner";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { ArrowLeft, Lock, Mail } from "lucide-react";
 
 const formSchema = z.object({
@@ -31,8 +30,6 @@ const formSchema = z.object({
 });
 
 export default function LoginForm() {
-  const router = useRouter();
-
   // const handleGoogleLogin = async () => {
   //   try {
   //     const { data, error } = await authClient.signIn.social({
@@ -122,7 +119,7 @@ export default function LoginForm() {
         toast.success("Login successful!", {
           id: toastId,
         });
-        router.push("/");
+        window.location.replace("/");
       } catch (error) {
         toast.error("An unexpected error occurred. Please try again.", {
           id: toastId,

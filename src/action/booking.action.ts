@@ -20,3 +20,19 @@ export const getAllBookings = async (filters?: BookingsFilters) => {
   const { data, error } = await BookingService.getAllBookings(filters);
   return { data, error };
 };
+
+export const updateBookingStatus = async (
+  bookingId: string,
+  status: string,
+) => {
+  const { data, error } = await BookingService.updateBookingStatus(
+    bookingId,
+    status,
+  );
+  return { data, error };
+};
+
+export const getMyBookings = async (filters?: BookingsFilters) => {
+  const { data, error } = await BookingService.getMyBookings(filters);
+  return { data, error };
+};
