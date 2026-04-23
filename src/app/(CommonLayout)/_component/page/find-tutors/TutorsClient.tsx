@@ -119,28 +119,6 @@ export default function TutorsClient({
     return () => window.clearTimeout(debounceId);
   }, [searchInput]);
 
-  useEffect(() => {
-    if (!isFilterOpen) {
-      document.body.style.overflow = "";
-      return;
-    }
-
-    document.body.style.overflow = "hidden";
-
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsFilterOpen(false);
-      }
-    };
-
-    window.addEventListener("keydown", handleEscape);
-
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", handleEscape);
-    };
-  }, [isFilterOpen]);
-
   const clearAllFilters = () => {
     setSearchInput("");
     setFilters((prev) => ({
@@ -250,18 +228,11 @@ export default function TutorsClient({
         </div>
 
         {/* Filters - Sidebar Drawer on Mobile/Tablet */}
-        {isFilterOpen ? (
-          <div className="lg:hidden">
-            <button
-              type="button"
-              className="fixed inset-0 z-60 bg-black/45"
-              onClick={() => setIsFilterOpen(false)}
-              aria-label="Close filters"
-            />
-
-            <aside
+        <div className="lg:hidden">
+          {isFilterOpen ? (
+            <div
               id="mobile-filter-sidebar"
-              className="fixed left-0 top-0 z-70 h-dvh w-[86vw] max-w-sm overflow-y-auto border-r border-border bg-background p-4 shadow-2xl"
+              className="rounded-2xl border border-border/70 bg-card p-4 shadow-sm"
             >
               <div className="mb-4 flex items-center justify-between border-b border-border pb-3">
                 <h2 className="text-sm font-semibold text-foreground">
@@ -283,9 +254,9 @@ export default function TutorsClient({
                 setFilters={setFilters}
                 categories={categories}
               />
-            </aside>
-          </div>
-        ) : null}
+            </div>
+          ) : null}
+        </div>
 
         {/* Desktop Filters */}
         <div className="hidden lg:block">

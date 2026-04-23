@@ -29,7 +29,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-[color-mix(in_oklab,var(--background)_86%,#fff7ed)]/90 dark:bg-[color-mix(in_oklab,var(--background)_88%,#1f130b)]/90 backdrop-blur-md border-b border-brand/10 dark:border-brand/20">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="relative max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16 md:h-18">
           {/* Logo */}
           <Link href={"/"}>
@@ -80,7 +80,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
 
                 <ModeToggle />
 
-                <Button className="bg-brand hover:bg-brand-strong text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105">
+                <Button className="bg-brand hover:bg-brand-strong text-white px-6 py-4 rounded-2xl text-sm font-semibold transition-all hover:scale-105">
                   <Link href="/find-tutors">Find Tutors</Link>
                 </Button>
               </>
@@ -95,7 +95,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                   Dashboard
                 </Link>
 
-                <Button className="bg-brand hover:bg-brand-strong text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105">
+                <Button className="bg-brand hover:bg-brand-strong text-white px-6 py-4 rounded-2xl text-sm font-semibold transition-all hover:scale-105">
                   <Link href="/find-tutors">Book Tutor</Link>
                 </Button>
               </>
@@ -104,6 +104,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
 
           {/* Mobile Icon */}
           <button
+            type="button"
             onClick={toggleMobileMenu}
             className="md:hidden flex items-center p-2 hover:text-brand transition-colors"
           >
@@ -111,43 +112,32 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
               {mobileMenuOpen ? "close" : "menu"}
             </span>
           </button>
-          {/* Mobile Overlay */}
           {mobileMenuOpen && (
-            <div
-              className="fixed inset-0 bg-black/50 z-40 md:hidden"
-              onClick={closeMobileMenu}
-            />
-          )}
+            <div className="absolute left-4 right-4 top-full z-50 mt-3 rounded-2xl border border-border/70 bg-card p-4 shadow-xl md:hidden">
+              <div className="flex items-center justify-between border-b border-border/70 pb-3">
+                <span className="text-sm font-semibold text-foreground">
+                  Menu
+                </span>
 
-          {/* Mobile Sidebar Menu */}
-          <div
-            className={`fixed top-0 right-0 h-screen w-72 bg-brand-surface dark:bg-brand-surface shadow-xl md:hidden z-50 transform transition-all duration-300 ease-in-out ${
-              mobileMenuOpen
-                ? "translate-x-0 visible"
-                : "translate-x-full invisible"
-            }`}
-          >
-            <div className="flex flex-col h-full">
-              {/* Header */}
-              <div className="flex items-center justify-between px-6 py-5 border-b border-brand/10 dark:border-brand/20">
-                <button
-                  onClick={closeMobileMenu}
-                  className="p-2 hover:text-brand transition-colors"
-                >
-                  <span className="material-symbols-outlined text-xl text-brand-ink dark:text-white">
-                    close
-                  </span>
-                </button>
-
-                <ModeToggle />
+                <div className="flex items-center gap-2">
+                  <ModeToggle />
+                  <button
+                    type="button"
+                    onClick={closeMobileMenu}
+                    className="p-2 hover:text-brand transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-xl text-brand-ink dark:text-white">
+                      close
+                    </span>
+                  </button>
+                </div>
               </div>
 
-              {/* Menu Content */}
-              <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-4">
+              <div className="flex flex-col gap-2 pt-4">
                 <Link
                   href="/"
                   onClick={closeMobileMenu}
-                  className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors py-2.5"
+                  className="rounded-xl px-3 py-3 text-sm font-medium text-brand-ink transition-colors hover:bg-muted hover:text-brand"
                 >
                   Home
                 </Link>
@@ -155,17 +145,17 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                 <Link
                   href="/#featured-tutors"
                   onClick={closeMobileMenu}
-                  className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors py-2.5"
+                  className="rounded-xl px-3 py-3 text-sm font-medium text-brand-ink transition-colors hover:bg-muted hover:text-brand"
                 >
                   Featured Tutors
                 </Link>
 
-                {!isLoggedIn && (
+                {!isLoggedIn ? (
                   <>
                     <Link
                       href="/login"
                       onClick={closeMobileMenu}
-                      className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors py-2.5"
+                      className="rounded-xl px-3 py-3 text-sm font-medium text-brand-ink transition-colors hover:bg-muted hover:text-brand"
                     >
                       Login
                     </Link>
@@ -173,29 +163,34 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                     <Link
                       href="/signup"
                       onClick={closeMobileMenu}
-                      className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors py-2.5"
+                      className="rounded-xl px-3 py-3 text-sm font-medium text-brand-ink transition-colors hover:bg-muted hover:text-brand"
                     >
                       Register
                     </Link>
 
-                    <Button className="w-full bg-brand hover:bg-brand-strong text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105">
+                    <Button
+                      asChild
+                      className="h-11 w-full rounded-xl bg-brand text-white shadow-sm hover:bg-brand-strong"
+                    >
                       <Link href="/find-tutors" onClick={closeMobileMenu}>
                         Find Tutors
                       </Link>
                     </Button>
                   </>
-                )}
-
-                {isLoggedIn && (
+                ) : (
                   <>
                     <Link
                       href="/dashboard"
-                      className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors py-2.5"
+                      onClick={closeMobileMenu}
+                      className="rounded-xl px-3 py-3 text-sm font-medium text-brand-ink transition-colors hover:bg-muted hover:text-brand"
                     >
                       Dashboard
                     </Link>
 
-                    <Button className="w-full bg-brand hover:bg-brand-strong text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105">
+                    <Button
+                      asChild
+                      className="h-11 w-full rounded-xl bg-brand text-white shadow-sm hover:bg-brand-strong"
+                    >
                       <Link href="/find-tutors" onClick={closeMobileMenu}>
                         Book Tutor
                       </Link>
@@ -204,7 +199,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                 )}
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </nav>
