@@ -67,7 +67,7 @@ export function AppSidebar({
               />
             </div>
 
-            <span className="ui-title-brand">SkillBridge</span>
+            <span className="ui-title-brand">Skillnack</span>
           </div>
         </Link>
       </SidebarHeader>
