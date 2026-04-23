@@ -1,8 +1,7 @@
 "use server";
 
 import { BookingService } from "@/service/booking.service";
-import { BookingsFilters, BookingSlot } from "@/types";
-
+import { BookingsFilters, BookingSlot, ServiceOptions } from "@/types";
 
 export const createBooking = async (
   tutorId: string,
@@ -16,8 +15,11 @@ export const createBooking = async (
   return { data, error };
 };
 
-export const getAllBookings = async (filters?: BookingsFilters) => {
-  const { data, error } = await BookingService.getAllBookings(filters);
+export const getAllBookings = async (
+  filters?: BookingsFilters,
+  options?: ServiceOptions,
+) => {
+  const { data, error } = await BookingService.getAllBookings(filters, options);
   return { data, error };
 };
 
@@ -32,7 +34,10 @@ export const updateBookingStatus = async (
   return { data, error };
 };
 
-export const getMyBookings = async (filters?: BookingsFilters) => {
-  const { data, error } = await BookingService.getMyBookings(filters);
+export const getMyBookings = async (
+  filters?: BookingsFilters,
+  options?: ServiceOptions,
+) => {
+  const { data, error } = await BookingService.getMyBookings(filters, options);
   return { data, error };
 };

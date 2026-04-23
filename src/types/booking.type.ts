@@ -44,11 +44,18 @@ export type StudentBookings = {
   };
 };
 
-
 export type BookingSlot = {
   sessionDate: string;
   startTime: string;
   endTime: string;
+};
+
+export type StudentSessionBuckets = {
+  todaySessions: StudentBookings[];
+  upcomingSessions: StudentBookings[];
+  historySessions: StudentBookings[];
+  withoutReviewSessions: StudentBookings[];
+  completedCount: number;
 };
 
 export type Bookings = {

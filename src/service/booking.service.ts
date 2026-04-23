@@ -1,10 +1,10 @@
 import { BookingStatus } from "@/constants/status";
 import { env } from "@/env";
-import { BookingsFilters, BookingSlot } from "@/types";
-import { create } from "domain";
+import { BookingsFilters, BookingSlot, ServiceOptions } from "@/types";
 import { cookies } from "next/headers";
 
 const API_URL = env.API_URL;
+export const BOOKING_REVALIDATE = 20;
 
 export const BookingService = {
   createBooking: async (tutorId: string, bookingData: BookingSlot) => {
@@ -42,7 +42,10 @@ export const BookingService = {
     }
   },
 
-  getAllBookings: async (filters?: BookingsFilters) => {
+  getAllBookings: async (
+    filters?: BookingsFilters,
+    options?: ServiceOptions,
+  ) => {
     try {
       const cookieStore = await cookies();
       const url = new URL(`${API_URL}/bookings`);
@@ -55,11 +58,23 @@ export const BookingService = {
         });
       }
 
-      const res = await fetch(url.toString(), {
+      const config: RequestInit = {
         headers: {
           cookie: cookieStore.toString(),
         },
-      });
+      };
+
+      if (options?.cache) {
+        config.cache = options.cache;
+      }
+
+      if (options?.revalidate) {
+        config.next = { ...config.next, revalidate: options.revalidate };
+      }
+
+      config.next = { ...config.next, tags: ["bookings"] };
+
+      const res = await fetch(url.toString(), config);
 
       const data = await res.json();
 
@@ -82,7 +97,7 @@ export const BookingService = {
     }
   },
 
-    updateBookingStatus: async (bookingId: string, status: string) => {
+  updateBookingStatus: async (bookingId: string, status: string) => {
     try {
       const cookieStore = await cookies();
       const res = await fetch(`${API_URL}/bookings/${bookingId}`, {
@@ -114,24 +129,39 @@ export const BookingService = {
     }
   },
 
-  getMyBookings: async (filters?: BookingsFilters) => {
+  getMyBookings: async (
+    filters?: BookingsFilters,
+    options?: ServiceOptions,
+  ) => {
     try {
       const cookieStore = await cookies();
       const url = new URL(`${API_URL}/bookings/my-bookings`);
 
       if (filters) {
         Object.entries(filters as BookingsFilters).forEach(([key, value]) => {
-          if (value !== undefined || value !== null || value !== "") {
+          if (value !== undefined && value !== null && value !== "") {
             url.searchParams.append(key, value);
           }
         });
       }
 
-      const res = await fetch(url.toString(), {
+      const config: RequestInit = {
         headers: {
           cookie: cookieStore.toString(),
         },
-      });
+      };
+
+      if (options?.cache) {
+        config.cache = options.cache;
+      }
+
+      if (options?.revalidate) {
+        config.next = { ...config.next, revalidate: options.revalidate };
+      }
+
+      config.next = { ...config.next, tags: ["my-bookings"] };
+
+      const res = await fetch(url.toString(), config);
 
       const data = await res.json();
 
