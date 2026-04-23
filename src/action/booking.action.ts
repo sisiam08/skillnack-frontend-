@@ -1,7 +1,7 @@
 "use server";
 
 import { BookingService } from "@/service/booking.service";
-import { BookingSlot } from "@/types";
+import { BookingsFilters, BookingSlot } from "@/types";
 
 
 export const createBooking = async (
@@ -13,5 +13,10 @@ export const createBooking = async (
     bookingData,
   );
 
+  return { data, error };
+};
+
+export const getAllBookings = async (filters?: BookingsFilters) => {
+  const { data, error } = await BookingService.getAllBookings(filters);
   return { data, error };
 };
