@@ -8,3 +8,4 @@ export type * from "./booking.type";
 export type * from "./route.type";
 export type * from "./user.type";
 export type * from "./admin.type";
+export type * from "./student.type";
