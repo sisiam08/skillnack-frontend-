@@ -18,6 +18,14 @@ export type FiltersStateProp = {
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
 };
 
+export type UsersFilter = {
+  search?: string;
+  role?: string;
+  status?: string;
+  page?: string;
+  limit?: string;
+};
+
 export type PaginationType = {
   totalData: number;
   page: number;

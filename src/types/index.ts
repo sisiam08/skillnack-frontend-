@@ -6,3 +6,4 @@ export type * from "./availability.type";
 export type * from "./review.type";
 export type * from "./booking.type";
 export type * from "./route.type";
+export type * from "./user.type";
