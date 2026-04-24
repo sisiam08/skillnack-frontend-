@@ -234,4 +234,51 @@ export const TutorService = {
       };
     }
   },
+
+    getTutorStats: async function () {
+    try {
+      const cookieStore = await cookies();
+      const res = await fetch(`${API_URL}/tutors/stats`, {
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data?.success) {
+        return {
+          data: null,
+          error: { message: data?.message || "Failed to get tutor stats!" },
+        };
+      }
+
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error: { message: "Something went wrong!" } };
+    }
+  },
+
+  getWeeklyEarnings: async function () {
+    try {
+      const cookieStore = await cookies();
+      const res = await fetch(`${API_URL}/tutors/weeklyEarnings`, {
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data?.success) {
+        return {
+          data: null,
+          error: { message: data?.message || "Failed to get weekly earnings!" },
+        };
+      }
+      
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error: { message: "Something went wrong!" } };
+    }
+  },
 };
