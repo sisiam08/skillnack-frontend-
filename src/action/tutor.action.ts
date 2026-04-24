@@ -1,7 +1,7 @@
 "use server";
 
 import { TutorService } from "@/service/tutor.service";
-import { Filters, ServiceOptions } from "@/types";
+import { Filters, ServiceOptions, TutorProfileCreateData } from "@/types";
 
 export const getAllTutors = async (
   params?: Filters,
@@ -12,3 +12,36 @@ export const getAllTutors = async (
   return { data, error };
 };
 
+export const createTutorProfile = async (tutorData: TutorProfileCreateData) => {
+  const { data, error } = await TutorService.createTutorProfile(tutorData);
+  return { data, error };
+};
+
+export const updateTutorProfile = async (tutorData: TutorProfileCreateData) => {
+  const { data, error } = await TutorService.updateTutorProfile(tutorData);
+  return { data, error };
+};
+
+export const getTutorProfile = async () => {
+  const { data, error } = await TutorService.getTutorProfile();
+  return { data, error };
+};
+
+export const setDefaultClassLink = async (defaultClassLink: string) => {
+  const { data, error } =
+    await TutorService.setDefaultClassLink(defaultClassLink);
+  return { data, error };
+};
+
+export const getDefaultClassLink = async () => {
+  const { data, error } = await TutorService.getDefaultClassLink();
+  return { data, error };
+};
+
+export const sendClassLink = async (bookingId: string, classLink: string) => {
+  const { data, error } = await TutorService.sendClassLink(
+    bookingId,
+    classLink,
+  );
+  return { data, error };
+};

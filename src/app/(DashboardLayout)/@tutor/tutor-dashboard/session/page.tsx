@@ -1,7 +1,12 @@
-export default function TutorSessionsPage() {
-  return (
-    <div>
-      <h1>This is TutorSessionsPage component</h1>
-    </div>
-  );
+import TutorSessionClient from "@/app/(DashboardLayout)/_component/tutor/session/TutorSessionClient";
+import { BOOKING_REVALIDATE, BookingService } from "@/service/booking.service";
+
+export const revalidate = BOOKING_REVALIDATE;
+
+export default async function TutorSessionPage() {
+  const bookingSessions = await BookingService.getBookingSessions();
+
+  const initialSessions = bookingSessions.data || [];
+
+  return <TutorSessionClient initialSessions={initialSessions} />;
 }

@@ -183,4 +183,48 @@ export const BookingService = {
       };
     }
   },
+
+    getBookingSessions: async (filters?: BookingsFilters) => {
+    try {
+      const cookieStore = await cookies();
+      const url = new URL(`${API_URL}/tutors/bookings`);
+
+      if (filters) {
+        Object.entries(filters as BookingsFilters).forEach(([key, value]) => {
+          if (value !== undefined && value !== null && value !== "") {
+            url.searchParams.append(key, value);
+          }
+        });
+      }
+
+      const res = await fetch(url.toString(), {
+        headers: {
+          cookie: cookieStore.toString(),
+        },
+      });
+
+      const data = await res.json();
+
+      // console.log(data);
+
+      if (!res.ok || !data?.success) {
+        return {
+          data: null,
+          error: {
+            message: data?.message || "Failed to get booking sessions!",
+          },
+        };
+      }
+
+      return {
+        data,
+        error: null,
+      };
+    } catch (error: any) {
+      return {
+        data: null,
+        error: { message: error.message || "Something went wrong!" },
+      };
+    }
+  },
 };

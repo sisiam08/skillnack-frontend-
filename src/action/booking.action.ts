@@ -41,3 +41,9 @@ export const getMyBookings = async (
   const { data, error } = await BookingService.getMyBookings(filters, options);
   return { data, error };
 };
+
+export const getBookingSessions = async (filters?: BookingsFilters) => {
+  const { data, error } = await BookingService.getBookingSessions(filters);
+
+  return { data, error };
+};
