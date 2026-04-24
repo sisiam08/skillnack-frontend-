@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Bookings, BookingsFilters, PaginationType } from "@/types";
 import { UserRole } from "@/constants/roles";
-import BookingsHistory from "@/app/(DashboardLayout)/_component/shared/BookingsHistory";
 import { getAllBookings } from "@/action/booking.action";
+import BookingsHistory from "../../shared/BookingsHistory";
 
 type AdminBookingsClientProps = {
   initialBookings: Bookings[];

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { TutorService } from "@/service/tutor.service";
 import { Card, CardContent } from "@/components/ui/card";
-import { TutorProfile } from "@/types";
+import { ParamsProps, TutorProfile } from "@/types";
 
 import TutorBookingPanel from "../../_component/page/find-tutors/id/TutorBookingPanel";
 
@@ -13,15 +13,7 @@ import Reviews from "../../_component/page/find-tutors/id/Reviews";
 
 export const revalidate = 300;
 
-type TutorDetailsPageProps = {
-  params: Promise<{
-    id: string;
-  }>;
-};
-
-export default async function TutorProfileDetailPage({
-  params,
-}: TutorDetailsPageProps) {
+export default async function TutorProfileDetailPage({ params }: ParamsProps) {
   const { id: tutorId } = await params;
 
   const tutorResponse = await TutorService.getTutorById(tutorId);
@@ -60,7 +52,7 @@ export default async function TutorProfileDetailPage({
   ).slice(0, 4);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[linear-gradient(180deg,rgba(236,91,19,0.12)_0%,transparent_30%),linear-gradient(180deg,var(--background),color-mix(in_oklab,var(--background)_86%,#f9fafb)_65%,var(--background))] pb-28 pt-8 lg:pb-14">
+    <main className="relative min-h-screen overflow-hidden pb-28 pt-8 lg:pb-14">
       <div className="relative mx-auto w-full max-w-7xl px-4 ">
         <div className="grid space-y-6 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_390px]">
           <section className="space-y-6">

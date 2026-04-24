@@ -30,7 +30,6 @@ import {
   getBookingSessions,
   updateBookingStatus,
 } from "@/action/booking.action";
-import SessionCard from "@/app/(DashboardLayout)/_component/shared/SessionCard";
 import SendClassLinkSheet from "./SendClassLinkSheet";
 import CompleteSessionSheet from "./CompleteSessionSheet";
 import {
@@ -38,6 +37,9 @@ import {
   sendClassLink,
   setDefaultClassLink,
 } from "@/action/tutor.action";
+import { v7 as uuidv7 } from "uuid";
+import { useRouter } from "next/navigation";
+import SessionCard from "../../shared/SessionCard";
 
 interface TutorSessionClientProps {
   initialSessions: TutorBookingSession[];
@@ -53,19 +55,19 @@ export default function TutorSessionClient({
   const [activeSession, setActiveSession] =
     useState<TutorBookingSession | null>(null);
 
-  const [defaultClassLink, set_DefaultClassLink] = useState("");
-
   const [sheetOpen, setSheetOpen] = useState(false);
   const [sheetSession, setSheetSession] = useState<TutorBookingSession | null>(
     null,
   );
-  const [linkOption, setLinkOption] = useState<"default" | "new">("default");
-  const [newClassLink, setNewClassLink] = useState("");
+  const [classLink, setClassLink] = useState("");
 
   const [completeSessionSheetOpen, setCompleteSessionSheetOpen] =
     useState(false);
   const [completedSession, setCompletedSession] =
     useState<TutorBookingSession | null>(null);
+
+  let randomId = uuidv7();
+  const router = useRouter();
 
   const hasSessionEnded = (session: TutorBookingSession): boolean => {
     const today = startOfToday();
@@ -127,8 +129,6 @@ export default function TutorSessionClient({
       const classLinkResponse = await getDefaultClassLink();
 
       if (classLinkResponse.error || !classLinkResponse.data) return;
-
-      set_DefaultClassLink(classLinkResponse.data.data.defaultClassLink || "");
     })();
   }, [initialSessions]);
 
@@ -168,6 +168,11 @@ export default function TutorSessionClient({
     setCompletedSession(null);
   };
 
+  const openInNewTab = (randomId: string) => {
+    const url = `/class/${randomId}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
   const startClass = (session: TutorBookingSession) => {
     if (activeSession) {
       if (hasSessionEnded(activeSession)) {
@@ -175,10 +180,10 @@ export default function TutorSessionClient({
         return;
       }
       if (activeSession.id === session.id) {
-        setLinkOption("default");
-        setNewClassLink("");
+        setClassLink("");
         setSheetOpen(true);
         setSheetSession(session);
+        openInNewTab(randomId);
         return;
       }
       toast.error(
@@ -187,27 +192,10 @@ export default function TutorSessionClient({
       return;
     }
 
-    setLinkOption("default");
-    setNewClassLink("");
+    setClassLink("");
     setSheetOpen(true);
     setSheetSession(session);
-  };
-
-  const saveDefaultClassLink = async (link: string) => {
-    const toastId = toast.loading("Saving...");
-
-    try {
-      const response = await setDefaultClassLink(link.trim());
-
-      if (response.error || !response.data) {
-        toast.error("Failed to save default class link", { id: toastId });
-        return;
-      }
-
-      toast.success("Default class link saved successfully", { id: toastId });
-    } catch (error) {
-      toast.error("Failed to save default class link", { id: toastId });
-    }
+    openInNewTab(randomId);
   };
 
   const sendLink = async (classLink: string) => {
@@ -255,7 +243,7 @@ export default function TutorSessionClient({
           </CardHeader>
         </Card>
 
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <div>
           <div className="space-y-6 xl:col-span-2">
             <Card>
               <CardHeader>
@@ -323,50 +311,14 @@ export default function TutorSessionClient({
               </CardContent>
             </Card>
           </div>
-
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Link2
-                    className="size-4 text-brand"
-                    suppressHydrationWarning
-                  />
-                  Class Link
-                </CardTitle>
-                <CardDescription>
-                  Add or update your default live class link.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Input
-                    placeholder="https://meet.google.com/..."
-                    value={defaultClassLink}
-                    onChange={(e) => set_DefaultClassLink(e.target.value)}
-                  />
-                </div>
-                <Button
-                  className="w-full bg-brand text-white hover:bg-brand-strong"
-                  onClick={() => saveDefaultClassLink(defaultClassLink)}
-                >
-                  <Link2 className="mr-2 size-4" suppressHydrationWarning />
-                  Save Class Link
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
         </div>
       </div>
 
       <SendClassLinkSheet
         sheetOpen={sheetOpen}
         setSheetOpen={setSheetOpen}
-        linkOption={linkOption}
-        setLinkOption={setLinkOption}
-        defaultClassLink={defaultClassLink}
-        newClassLink={newClassLink}
-        setNewClassLink={setNewClassLink}
+        classLink={classLink}
+        setClassLink={setClassLink}
         sendLink={sendLink}
       />
 

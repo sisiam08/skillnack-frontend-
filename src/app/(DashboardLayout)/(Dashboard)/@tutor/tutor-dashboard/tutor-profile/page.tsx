@@ -1,8 +1,8 @@
-import TutorProfileClient from "@/app/(DashboardLayout)/_component/tutor/profile/TutorProfileClient";
 import { UserService } from "@/service/user.service";
 import { TutorService } from "@/service/tutor.service";
 import { CategoryService } from "@/service/category.service";
 import { TutorProfile } from "@/types";
+import TutorProfileClient from "../../../_component/tutor/profile/TutorProfileClient";
 
 export const dynamic = "force-dynamic";
 

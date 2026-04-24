@@ -9,3 +9,4 @@ export type * from "./route.type";
 export type * from "./user.type";
 export type * from "./admin.type";
 export type * from "./student.type";
+export type * from "./params.type";

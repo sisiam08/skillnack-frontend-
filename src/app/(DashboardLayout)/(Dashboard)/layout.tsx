@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/sidebar";
 import { UserRole } from "@/constants/roles";
 import { redirect } from "next/navigation";
-import default_img from "../../../public/default-avatar-profile.jpg";
+import default_img from "../../../../public/default-avatar-profile.jpg";
 import Link from "next/link";
 import { AppSidebar } from "./_component/shared/AppSidebar";
 import { ModeToggle } from "@/components/shared/ModeToggle";

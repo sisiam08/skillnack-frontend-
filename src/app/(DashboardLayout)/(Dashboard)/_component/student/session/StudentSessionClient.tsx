@@ -2,9 +2,6 @@
 
 import { getMyBookings, updateBookingStatus } from "@/action/booking.action";
 import { createReview } from "@/action/review.action";
-import SessionCard from "@/app/(DashboardLayout)/_component/shared/SessionCard";
-import HistorySessionItem from "@/app/(DashboardLayout)/_component/student/session/HistorySessionItem";
-import ReviewSessionSheet from "@/app/(DashboardLayout)/_component/student/session/ReviewSessionSheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,6 +36,9 @@ import {
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { isAfter, isToday, startOfDay, startOfToday } from "date-fns";
+import SessionCard from "../../shared/SessionCard";
+import ReviewSessionSheet from "./ReviewSessionSheet";
+import HistorySessionItem from "./HistorySessionItem";
 
 const getStudentSessionBuckets = (
   allSessions: StudentBookings[],

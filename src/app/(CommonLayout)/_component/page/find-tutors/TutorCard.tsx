@@ -19,9 +19,35 @@ export default function TutorCard({
   // Extract tags (max 3)
   const tags = tutor.category ? [tutor.category.name] : [];
 
-  // Simple availability hint (placeholder logic)
-  const availabilityHint =
-    tutor.totalCompletedBookings > 10 ? "Available today" : "Next slot today";
+  const availableDays = tutor.availability?.map((slot) => slot.dayOfWeek);
+  const today = new Date().getDay();
+
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  const getNextAvailableDay = (availableDays: number[], today: number) => {
+    for (let i = 1; i <= 7; i++) {
+      const nextDay = (today + i) % 7;
+      if (availableDays.includes(nextDay)) {
+        return days[nextDay];
+      }
+    }
+    return null;
+  };
+
+  const availabilityHint = availableDays?.includes(today)
+    ? "Available today"
+    : "Next available: " +
+      (availableDays && availableDays.length > 0
+        ? getNextAvailableDay(availableDays, today)
+        : "No availability");
 
   return (
     <Card
@@ -56,7 +82,7 @@ export default function TutorCard({
             </div>
 
             {/* Expertise Title */}
-            <p className="truncate text-xs font-semibold text-primary/80">
+            <p className="truncate text-xs font-semibold text-gray-400">
               {expertiseTitle}
             </p>
           </div>

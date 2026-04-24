@@ -22,6 +22,11 @@ export type TutorProfile = {
     id?: string;
     name?: string;
   };
+  availability?: {
+    dayOfWeek: number;
+    startTime: string;
+    endTime: string;
+  }[];
 };
 
 export type TutorCardProps = {

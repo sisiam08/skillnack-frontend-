@@ -1,5 +1,5 @@
-import StudentSessionClient from "@/app/(DashboardLayout)/_component/student/session/StudentSessionClient";
 import { BOOKING_REVALIDATE } from "@/service/booking.service";
+import StudentSessionClient from "../../../_component/student/session/StudentSessionClient";
 
 export const revalidate = BOOKING_REVALIDATE;
 
