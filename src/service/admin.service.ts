@@ -81,7 +81,7 @@ export const AdminService = {
     }
   },
 
-    getAdminDashboardStats: async () => {
+  getAdminDashboardStats: async () => {
     try {
       const cookieStore = await cookies();
       const res = await fetch(`${API_URL}/admin/stats`, {

@@ -34,7 +34,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="mt-16 border-t border-brand/10 bg-[color-mix(in_oklab,var(--background)_88%,#fff7ed)] pb-10 pt-16 dark:border-brand/25 dark:bg-[color-mix(in_oklab,var(--background)_90%,#1f130b)]">
+    <footer className="mt-16 border-t border-brand/10 bg-[color-mix(in_oklab,var(--background)_88%,#fff7ed)] pb-10 pt-16 dark:border-brand/25 dark:bg-card">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
           <div className="space-y-4">

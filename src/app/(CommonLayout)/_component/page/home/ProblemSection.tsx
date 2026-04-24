@@ -26,15 +26,16 @@ const painPoints = [
 
 export function ProblemSection() {
   return (
-    <section className="relative border-y border-border/70 bg-muted/40">
+    <section className="relative border-y border-border/70">
       <div className="mx-auto max-w-5xl px-4 py-20 text-center sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-2xl flex-col items-center">
-          <Badge className="inline-flex items-center gap-2 border-orange-200 bg-white px-4 py-2 text-sm font-semibold text-[#d94f0f] shadow-sm">
+          <Badge className="inline-flex items-center gap-2 border-orange-200 bg-orange-50 px-4 py-2 text-sm font-semibold text-[#d94f0f] shadow-sm">
             <Zap className="h-4 w-4" />
             Problem first, not course first
           </Badge>
           <h2 className="mt-6 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Stuck on a problem? You’re not alone.
+            <span className="dark:text-brand">Stuck on a problem? </span>
+            You’re not alone.
           </h2>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">
             You jump from YouTube to forums, still need help right now, and end

@@ -40,11 +40,12 @@ export default function Sorting({ filters, setFilters }: FiltersStateProp) {
         <SelectValue placeholder="Sort by" />
       </SelectTrigger>
 
-      <SelectContent>
+      <SelectContent className="bg-brand/50 backdrop-blur-sm border border-border/70 rounded-lg">
         {sortOptions.map((option) => (
           <SelectItem
             key={option.label}
             value={`${option.sortBy}-${option.sortOrder}`}
+            
           >
             {option.label}
           </SelectItem>

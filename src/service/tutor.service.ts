@@ -235,7 +235,7 @@ export const TutorService = {
     }
   },
 
-    getTutorStats: async function () {
+  getTutorStats: async function () {
     try {
       const cookieStore = await cookies();
       const res = await fetch(`${API_URL}/tutors/stats`, {
@@ -275,7 +275,7 @@ export const TutorService = {
           error: { message: data?.message || "Failed to get weekly earnings!" },
         };
       }
-      
+
       return { data, error: null };
     } catch (error) {
       return { data: null, error: { message: "Something went wrong!" } };

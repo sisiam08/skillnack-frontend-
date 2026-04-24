@@ -184,7 +184,7 @@ export const BookingService = {
     }
   },
 
-    getBookingSessions: async (filters?: BookingsFilters) => {
+  getBookingSessions: async (filters?: BookingsFilters) => {
     try {
       const cookieStore = await cookies();
       const url = new URL(`${API_URL}/tutors/bookings`);

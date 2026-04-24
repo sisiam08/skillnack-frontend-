@@ -23,8 +23,8 @@ export default async function TutorsPage() {
   const categories = categoriesResponse.data?.data ?? [];
 
   return (
-    <main className="relative overflow-hidden bg-background text-foreground">
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(236,91,19,0.12)_0%,transparent_30%),linear-gradient(180deg,var(--background),color-mix(in_oklab,var(--background)_86%,#f9fafb)_65%,var(--background))]" />
+    <main className="relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 " />
 
       <div className="relative mx-auto w-full max-w-7xl px-4 py-8">
         <TutorsClient

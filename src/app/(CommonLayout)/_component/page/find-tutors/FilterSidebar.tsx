@@ -38,7 +38,7 @@ export default function FiltersSidebar({
             Filters
           </h2>
           <Button
-            className="text-xs font-medium text-primary bg-white dark:bg-background hover:bg-gray-100 dark:hover:bg-muted"
+            className="text-xs font-medium text-primary bg-white dark:bg-card hover:bg-gray-100 dark:hover:bg-muted"
             onClick={() => {
               setFilters({
                 search: undefined,

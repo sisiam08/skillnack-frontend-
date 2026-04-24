@@ -22,7 +22,6 @@ export const StudentService = {
         };
       }
 
-
       return { data, error: null };
     } catch (error: any) {
       return {
@@ -45,7 +44,9 @@ export const StudentService = {
       if (!res.ok || !data?.success) {
         return {
           data: null,
-          error: { message: data?.message || "Failed to get student recent activity!" },
+          error: {
+            message: data?.message || "Failed to get student recent activity!",
+          },
         };
       }
 

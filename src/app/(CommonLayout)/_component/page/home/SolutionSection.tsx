@@ -4,16 +4,16 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export function SolutionSection() {
   return (
-    <section className="bg-muted/40">
+    <section>
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
-            <Badge className="inline-flex items-center gap-2 border-orange-200 bg-white px-4 py-2 text-sm font-semibold text-[#d94f0f] shadow-sm">
+            <Badge className="inline-flex items-center gap-2 border-orange-200 bg-orange-50 px-4 py-2 text-sm font-semibold text-[#d94f0f] shadow-sm">
               <Zap className="h-4 w-4" />
               Fast help, no commitment
             </Badge>
             <h2 className="mt-6 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Get help — exactly when you need it
+              <span className="dark:text-brand">Get help </span>— exactly when you need it
             </h2>
             <p className="mt-4 text-lg leading-8 text-muted-foreground">
               No subscriptions. No long-term commitments. Just book a tutor and

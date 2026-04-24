@@ -9,8 +9,8 @@ import { UseCasesSection } from "./_component/page/home/UseCasesSection";
 
 export default function HomePage() {
   return (
-    <main className="relative overflow-hidden bg-background text-foreground">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(236,91,19,0.12),transparent_26%),radial-gradient(circle_at_top_right,rgba(251,146,60,0.12),transparent_24%),linear-gradient(180deg,var(--background),color-mix(in_oklab,var(--background)_86%,#f9fafb)_65%,var(--background))]" />
+    <main className="relative overflow-hidden ">
+      <div className="pointer-events-none absolute inset-0" />
 
       <div className="relative">
         <HeroSection />

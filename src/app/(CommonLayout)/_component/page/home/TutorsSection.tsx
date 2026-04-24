@@ -25,7 +25,7 @@ export function TutorsSection() {
             <Users className="h-4 w-4" />
             Tutor marketplace
           </Badge>
-          <h2 className="mt-6 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="mt-6 text-3xl font-bold tracking-tight text-foreground dark:text-brand sm:text-4xl">
             Turn your knowledge into income
           </h2>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">

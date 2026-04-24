@@ -28,7 +28,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
   const { mobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useMobileMenu();
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-[color-mix(in_oklab,var(--background)_86%,#fff7ed)]/90 dark:bg-[color-mix(in_oklab,var(--background)_88%,#1f130b)]/90 backdrop-blur-md border-b border-brand/10 dark:border-brand/20">
+    <nav className="sticky top-0 z-50 w-full bg-[color-mix(in_oklab,var(--background)_86%,#fff7ed)]/90 dark:bg-card backdrop-blur-md border-b border-brand/10 dark:border-brand/20">
       <div className="relative max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16 md:h-18">
           {/* Logo */}
@@ -57,9 +57,9 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
 
             <Link
               className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors"
-              href="/#featured-tutors"
+              href="/#how-it-works"
             >
-              Featured Tutors
+              How it Works
             </Link>
 
             {!isLoggedIn && (
@@ -143,11 +143,11 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                 </Link>
 
                 <Link
-                  href="/#featured-tutors"
+                  href="/#how-it-works"
                   onClick={closeMobileMenu}
                   className="rounded-xl px-3 py-3 text-sm font-medium text-brand-ink transition-colors hover:bg-muted hover:text-brand"
                 >
-                  Featured Tutors
+                  How it works
                 </Link>
 
                 {!isLoggedIn ? (

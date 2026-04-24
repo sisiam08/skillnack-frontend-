@@ -23,7 +23,7 @@ const trustPoints = [
 
 export function TrustSection() {
   return (
-    <section className="bg-muted/40">
+    <section>
       <div className="mx-auto max-w-6xl px-4 py-20 text-center sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
           Trusted by learners who want fast, focused help

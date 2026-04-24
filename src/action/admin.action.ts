@@ -15,9 +15,3 @@ export const updateUserStatus = async (userId: string, newStatus: string) => {
   );
   return { data, error };
 };
-
-
-export const getAdminDashboardStats = async () => {
-  const { data, error } = await AdminService.getAdminDashboardStats();
-  return { data, error };
-};

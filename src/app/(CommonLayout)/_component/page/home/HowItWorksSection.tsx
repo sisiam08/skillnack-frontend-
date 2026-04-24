@@ -29,14 +29,14 @@ const howItWorks = [
 
 export function HowItWorksSection() {
   return (
-    <section className="bg-muted/40">
+    <section id="how-it-works">
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <Badge className="inline-flex items-center gap-2 border-orange-200 bg-white px-4 py-2 text-sm font-semibold text-[#d94f0f] shadow-sm">
+          <Badge className="inline-flex items-center gap-2 border-orange-200 bg-orange-50 px-4 py-2 text-sm font-semibold text-[#d94f0f] shadow-sm">
             <BadgeCheck className="h-4 w-4" />
             Simple flow
           </Badge>
-          <h2 className="mt-6 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="mt-6 text-3xl font-bold tracking-tight text-foreground dark:text-brand sm:text-4xl">
             How it works
           </h2>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">
@@ -55,7 +55,7 @@ export function HowItWorksSection() {
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-[#ec5b13] transition-transform duration-300 group-hover:scale-110">
                   {step.icon}
                 </div>
-                <div className="mt-5 flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.2em] text-orange-300">
+                <div className="mt-5 flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.2em] text-brand">
                   <span>0{index + 1}</span>
                   <span className="h-px flex-1 bg-orange-100" />
                 </div>

@@ -33,7 +33,7 @@ export default async function DashboardLayout({
     <SidebarProvider>
       <AppSidebar user={userInfo} />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center justify-between gap-4 border-b bg-background px-4">
+        <header className="flex dark:bg-[rgb(23,23,23)] h-16 shrink-0 items-center justify-between gap-4 border-b px-4">
           <div className="flex items-center gap-2">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="h-6" />
@@ -64,7 +64,7 @@ export default async function DashboardLayout({
             </div>
           </Link>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
+        <div className="flex flex-1 flex-col dark:bg-[#111214] gap-4 p-4">
           {userInfo.role === UserRole.ADMIN
             ? admin
             : userInfo.role == UserRole.TUTOR

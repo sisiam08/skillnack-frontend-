@@ -156,7 +156,7 @@ export default function TutorsClient({
               </p>
             </div>
 
-            <div className="shrink-0 rounded-lg border border-border/70 bg-background/70 px-3 py-2 text-sm font-medium text-muted-foreground whitespace-nowrap">
+            <div className="shrink-0 rounded-lg border border-border/70 bg-card/70 px-3 py-2 text-sm font-medium text-muted-foreground whitespace-nowrap">
               <span className="inline-flex items-center gap-2">
                 <Users className="size-4 text-primary" />
                 <strong className="text-foreground">{totalData}</strong>{" "}

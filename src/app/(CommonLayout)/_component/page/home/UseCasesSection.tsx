@@ -1,9 +1,4 @@
-import {
-  BriefcaseBusiness,
-  Code2,
-  Brain,
-  Rocket,
-} from "lucide-react";
+import { BriefcaseBusiness, Code2, Brain, Rocket } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,7 +19,8 @@ const useCases = [
   {
     icon: <Brain className="h-5 w-5" />,
     title: "Concept Clarification",
-    description: "Break down complex topics and understand them clearly in just one session.",
+    description:
+      "Break down complex topics and understand them clearly in just one session.",
   },
   {
     icon: <Rocket className="h-5 w-5" />,
@@ -42,7 +38,8 @@ export function UseCasesSection() {
           Practical use cases
         </Badge>
         <h2 className="mt-6 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          Built for the problems people actually need solved
+          Built for the <span className="dark:text-brand">problems</span> people
+          actually need <span className="dark:text-brand">solved</span>
         </h2>
       </div>
 

@@ -46,12 +46,3 @@ export const sendClassLink = async (bookingId: string, classLink: string) => {
   return { data, error };
 };
 
-export const getTutorStats = async () => {
-  const { data, error } = await TutorService.getTutorStats();
-  return { data, error };
-};
-
-export const getWeeklyEarnings = async () => {
-  const { data, error } = await TutorService.getWeeklyEarnings();
-  return { data, error };
-};
