@@ -1,7 +1,7 @@
-import { BOOKING_REVALIDATE, BookingService } from "@/service/booking.service";
+import { BookingService } from "@/service/booking.service";
 import TutorSessionClient from "../../../_component/tutor/session/TutorSessionClient";
 
-export const revalidate = BOOKING_REVALIDATE;
+export const revalidate = 20;
 
 export default async function TutorSessionPage() {
   const bookingSessions = await BookingService.getBookingSessions();

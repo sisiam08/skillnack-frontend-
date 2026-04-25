@@ -1,7 +1,12 @@
 "use server";
 
 import { TutorService } from "@/service/tutor.service";
-import { Filters, ServiceOptions, TutorProfileCreateData } from "@/types";
+import {
+  Filters,
+  ServiceOptions,
+  TutorProfileCreateData,
+  TutorProfileUpdateData,
+} from "@/types";
 
 export const getAllTutors = async (
   params?: Filters,
@@ -17,7 +22,7 @@ export const createTutorProfile = async (tutorData: TutorProfileCreateData) => {
   return { data, error };
 };
 
-export const updateTutorProfile = async (tutorData: TutorProfileCreateData) => {
+export const updateTutorProfile = async (tutorData: TutorProfileUpdateData) => {
   const { data, error } = await TutorService.updateTutorProfile(tutorData);
   return { data, error };
 };

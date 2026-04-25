@@ -84,7 +84,7 @@ export function AppSidebar({
           </SidebarGroup>
         ))}
       </SidebarContent>
-      <SidebarFooter className="border-t border-border p-2">
+      <SidebarFooter className="border-t border-border p-2 bg-brand/10">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton

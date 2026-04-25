@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 
 import { BookingStatus } from "@/constants/status";
 import { UserRole } from "@/constants/roles";
@@ -35,7 +33,6 @@ import CompleteSessionSheet from "./CompleteSessionSheet";
 import {
   getDefaultClassLink,
   sendClassLink,
-  setDefaultClassLink,
 } from "@/action/tutor.action";
 import { v7 as uuidv7 } from "uuid";
 import { useRouter } from "next/navigation";
@@ -67,7 +64,6 @@ export default function TutorSessionClient({
     useState<TutorBookingSession | null>(null);
 
   let randomId = uuidv7();
-  const router = useRouter();
 
   const hasSessionEnded = (session: TutorBookingSession): boolean => {
     const today = startOfToday();

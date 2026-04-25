@@ -7,11 +7,12 @@ import {
 } from "@/components/ui/sidebar";
 import { UserRole } from "@/constants/roles";
 import { redirect } from "next/navigation";
-import default_img from "../../../../public/default-avatar-profile.jpg";
 import Link from "next/link";
 import { AppSidebar } from "./_component/shared/AppSidebar";
 import { ModeToggle } from "@/components/shared/ModeToggle";
 import { UserService } from "@/service/user.service";
+
+const DEFAULT_AVATAR = "/default-avatar-profile.jpg";
 
 export default async function DashboardLayout({
   admin,
@@ -54,7 +55,7 @@ export default async function DashboardLayout({
               </div>
               <Avatar className="h-9 w-9">
                 <AvatarImage
-                  src={userInfo.image || default_img.src}
+                  src={userInfo.image || DEFAULT_AVATAR}
                   alt={userInfo.name || "User Avatar"}
                 />
                 <AvatarFallback>

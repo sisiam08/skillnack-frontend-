@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetContent,
@@ -29,25 +28,19 @@ export default function SendClassLinkSheet({
     <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
       <SheetContent
         side="bottom"
-        className="inset-auto left-1/2 top-1/2 w-[95%] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-xl border"
+        className="inset-auto left-1/2 top-1/2 w-[95%] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-xl border-border/70 bg-card shadow-[0_12px_32px_rgba(15,23,42,0.08)]"
       >
         <SheetHeader>
           <SheetTitle>Send Class Link</SheetTitle>
         </SheetHeader>
 
         <div className="space-y-4 px-4 pb-6">
-          <div className="flex items-center gap-3 rounded-md border p-3">
-            <Label htmlFor="link" className="cursor-pointer">
-              Send class link
-            </Label>
-          </div>
-
           <div className="space-y-2">
-            <Label htmlFor="class-link">Class Link</Label>
             <Input
               id="class-link"
               placeholder="https://meet.google.com/..."
               value={classLink}
+              className="border-border focus-visible:border-brand/10"
               onChange={(e) => setClassLink(e.target.value)}
             />
           </div>

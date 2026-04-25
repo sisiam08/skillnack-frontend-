@@ -1,11 +1,8 @@
 import CategoryClient from "../../../_component/admin/category/CategoryClient";
-import {
-  CATEGORY_REVALIDATE,
-  CategoryService,
-} from "@/service/category.service";
+import { CategoryService } from "@/service/category.service";
 import { Categories } from "@/types";
 
-export const revalidate = CATEGORY_REVALIDATE;
+export const revalidate = 60;
 
 export default async function CategoryPage() {
   const categoriesResponse = await CategoryService.getCategories();

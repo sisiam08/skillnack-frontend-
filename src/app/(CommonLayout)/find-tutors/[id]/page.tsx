@@ -5,11 +5,12 @@ import { ParamsProps, TutorProfile } from "@/types";
 
 import TutorBookingPanel from "../../_component/page/find-tutors/id/TutorBookingPanel";
 
-import defaultImage from "../../../../../public/default-avatar-profile.jpg";
 import { AvailabilityService } from "@/service/availability.service";
 import { ReviewService } from "@/service/review.service";
 import Availabilities from "@/components/shared/Availabilities";
 import Reviews from "../../_component/page/find-tutors/id/Reviews";
+
+const DEFAULT_AVATAR = "/default-avatar-profile.jpg";
 
 export const revalidate = 300;
 
@@ -42,14 +43,11 @@ export default async function TutorProfileDetailPage({ params }: ParamsProps) {
 
   const expertiseTags = Array.from(
     new Set(
-      [
-        tutorDetails?.category?.name,
-        "Problem Solving",
-        "1:1 Sessions",
-        "Exam Strategy",
-      ].filter(Boolean) as string[],
+      [...(tutorDetails?.tags || []), tutorDetails?.category?.name].filter(
+        Boolean,
+      ) as string[],
     ),
-  ).slice(0, 4);
+  ).slice(0, 6);
 
   return (
     <main className="relative min-h-screen overflow-hidden pb-28 pt-8 lg:pb-14">
@@ -61,7 +59,7 @@ export default async function TutorProfileDetailPage({ params }: ParamsProps) {
                 <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
                   <div className="relative mx-auto size-24 overflow-hidden rounded-2xl border border-border sm:mx-0 sm:size-28">
                     <Image
-                      src={tutorDetails?.user?.image ?? defaultImage}
+                      src={tutorDetails?.user?.image ?? DEFAULT_AVATAR}
                       alt={tutorDetails?.user?.name ?? "Tutor profile"}
                       fill
                       unoptimized
@@ -83,7 +81,7 @@ export default async function TutorProfileDetailPage({ params }: ParamsProps) {
                       {expertiseTags.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-full border border-border bg-muted/40 px-3 py-1 text-xs font-medium text-foreground"
+                          className="rounded-full border border-border bg-muted/40 px-2 py-0.5 text-[10px] font-medium text-foreground"
                         >
                           {tag}
                         </span>

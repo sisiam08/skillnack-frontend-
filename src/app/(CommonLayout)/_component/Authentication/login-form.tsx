@@ -22,7 +22,7 @@ import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { toast } from "@/components/ui/sonner";
 import { useState } from "react";
-import { ArrowLeft, Lock, Mail } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Lock, Mail } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email!"),
@@ -87,6 +87,7 @@ export default function LoginForm() {
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [resetPasswordEmail, setResetPasswordEmail] = useState("");
   const [resetEmailSent, setResetEmailSent] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -311,14 +312,28 @@ export default function LoginForm() {
                         <div className="relative">
                           <Lock className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                           <Input
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             id={field.name}
                             name={field.name}
                             value={field.state.value}
                             placeholder="••••••••"
                             onChange={(e) => field.handleChange(e.target.value)}
-                            className="rounded-xl border-input bg-background py-4 pl-10 text-foreground"
+                            className="rounded-xl border-input bg-background py-4 pl-10 pr-10 text-foreground"
                           />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                            aria-label={
+                              showPassword ? "Hide password" : "Show password"
+                            }
+                          >
+                            {showPassword ? (
+                              <EyeOff className="size-5" />
+                            ) : (
+                              <Eye className="size-5" />
+                            )}
+                          </button>
                         </div>
                         {isInvalid && (
                           <FieldError errors={field.state.meta.errors} />

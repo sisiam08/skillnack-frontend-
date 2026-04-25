@@ -88,18 +88,8 @@ export default function TutorBookingPanel({
     return `Selected: ${format(new Date(selectedDate), "EEEE")}, ${convertInto12h(selectedSlot.startTime)} - ${convertInto12h(selectedSlot.endTime)} (${formatDuration(Number(selectedDuration))})`;
   }, [selectedDate, selectedDuration, selectedSlot]);
 
-  const updateDate = (value: string) => {
-    setSelectedDate(value);
-    setSelectedSlot(null);
-    setNeedsNewSlotSelection(Boolean(value && selectedDuration));
-  };
-
-  const updateDuration = async (value: string) => {
-    setSelectedDuration(value);
-    setSelectedSlot(null);
-    setNeedsNewSlotSelection(Boolean(selectedDate && value));
-
-    if (!selectedDate || !value) {
+  const loadAvailableSlots = async (date: string, duration: string) => {
+    if (!date || !duration) {
       setAvailableSlots(null);
       return;
     }
@@ -109,8 +99,8 @@ export default function TutorBookingPanel({
     try {
       const response = await getAvailableSlots(
         tutorId,
-        new Date(selectedDate),
-        value,
+        new Date(date),
+        duration,
       );
 
       if (!response?.data?.success || !response?.data?.data) {
@@ -132,6 +122,26 @@ export default function TutorBookingPanel({
         id: toastId,
       });
     }
+  };
+
+  const updateDate = (value: string) => {
+    setSelectedDate(value);
+    setSelectedSlot(null);
+    setNeedsNewSlotSelection(Boolean(value && selectedDuration));
+
+    if (value && selectedDuration) {
+      void loadAvailableSlots(value, selectedDuration);
+    } else {
+      setAvailableSlots(null);
+    }
+  };
+
+  const updateDuration = async (value: string) => {
+    setSelectedDuration(value);
+    setSelectedSlot(null);
+    setNeedsNewSlotSelection(Boolean(selectedDate && value));
+
+    void loadAvailableSlots(selectedDate, value);
   };
 
   const selectSlot = (slot: SlotType) => {

@@ -3,7 +3,15 @@
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import { useEffect, useRef } from "react";
 
-export default function Class({ classID }: { classID: string }) {
+export default function Class({
+  classID,
+  userID,
+  userName,
+}: {
+  classID: string;
+  userID: string;
+  userName: string;
+}) {
   const classRef = useRef<HTMLDivElement>(null);
 
   let myClass = async (element: HTMLDivElement) => {
@@ -14,8 +22,8 @@ export default function Class({ classID }: { classID: string }) {
       appID,
       serverSecret,
       classID!,
-      Date.now().toString(),
-      "Tutor",
+      userID!,
+      userName!,
     );
 
     const zp = ZegoUIKitPrebuilt.create(kitToken);
@@ -37,6 +45,8 @@ export default function Class({ classID }: { classID: string }) {
       scenario: {
         mode: ZegoUIKitPrebuilt.OneONoneCall,
       },
+      turnOnCameraWhenJoining: false,
+      turnOnMicrophoneWhenJoining: false,
     });
   };
 

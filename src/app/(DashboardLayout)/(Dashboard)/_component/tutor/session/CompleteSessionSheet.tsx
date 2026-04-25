@@ -33,7 +33,7 @@ export default function CompleteSessionSheet({
     >
       <SheetContent
         side="bottom"
-        className="inset-auto left-1/2 top-1/2 w-[95%] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-xl border"
+        className="inset-auto left-1/2 top-1/2 w-[95%] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-xl border-border/70 bg-card shadow-[0_12px_32px_rgba(15,23,42,0.08)]"
       >
         <SheetHeader>
           <SheetTitle>Session Ended - Mark as Completed</SheetTitle>

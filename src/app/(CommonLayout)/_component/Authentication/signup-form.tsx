@@ -24,7 +24,7 @@ import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { toast } from "@/components/ui/sonner";
 import { UserRole } from "@/constants/roles";
-import { Lock, Mail, User } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import { normalizeText } from "@/helpers/textNormalizer";
 
 const passwordRegex =
@@ -109,6 +109,8 @@ export default function SignupForm() {
   });
   const [passwordValue, setPasswordValue] = useState("");
   const [confirmPasswordValue, setConfirmPasswordValue] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const passwordsMatch =
     passwordValue.length > 0 && passwordValue === confirmPasswordValue;
   return (
@@ -250,7 +252,7 @@ export default function SignupForm() {
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                       <Input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         id={field.name}
                         name={field.name}
                         value={field.state.value}
@@ -260,8 +262,22 @@ export default function SignupForm() {
                           field.handleChange(v);
                           setPasswordValue(v);
                         }}
-                        className="rounded-xl border-input bg-background py-4 pl-10 text-foreground"
+                        className="rounded-xl border-input bg-background py-4 pl-10 pr-10 text-foreground"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
+                      >
+                        {showPassword ? (
+                          <EyeOff className="size-5" />
+                        ) : (
+                          <Eye className="size-5" />
+                        )}
+                      </button>
                     </div>
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
@@ -286,7 +302,7 @@ export default function SignupForm() {
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                       <Input
-                        type="password"
+                        type={showConfirmPassword ? "text" : "password"}
                         id={field.name}
                         name={field.name}
                         value={field.state.value}
@@ -296,8 +312,24 @@ export default function SignupForm() {
                           field.handleChange(v);
                           setConfirmPasswordValue(v);
                         }}
-                        className="rounded-xl border-input bg-background py-4 pl-10 text-foreground"
+                        className="rounded-xl border-input bg-background py-4 pl-10 pr-10 text-foreground"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword((prev) => !prev)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        aria-label={
+                          showConfirmPassword
+                            ? "Hide password"
+                            : "Show password"
+                        }
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff className="size-5" />
+                        ) : (
+                          <Eye className="size-5" />
+                        )}
+                      </button>
                     </div>
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />

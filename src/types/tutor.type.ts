@@ -1,4 +1,3 @@
-
 export type TutorProfile = {
   id: string;
   userId: string;
@@ -6,6 +5,7 @@ export type TutorProfile = {
   bio?: string | null;
   hourlyRate: number;
   experienceYears: number;
+  tags: string[];
   totalRating: number;
   totalReviews: number;
   totalCompletedBookings: number;
@@ -30,7 +30,7 @@ export type TutorProfile = {
 };
 
 export type TutorCardProps = {
-  tutor: TutorProfile;  
+  tutor: TutorProfile;
   animationIndex?: number;
 };
 
@@ -40,14 +40,15 @@ export type TutorProfileCreateData = {
   bio?: string | null;
   hourlyRate: number;
   experienceYears: number;
+  tags: string[];
 };
 
 export type TutorProfileUpdateData = {
-  userId: string;
-  categoriesId: string;
+  categoriesId?: string;
   bio?: string | null;
-  hourlyRate: number;
-  experienceYears: number;
+  hourlyRate?: number;
+  experienceYears?: number;
+  tags?: string[];
 };
 
 export type TutorStats = {

@@ -1,6 +1,6 @@
 "use client";
 
-import { type ChangeEvent, useRef, useState } from "react";
+import { type ChangeEvent, type KeyboardEvent, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,6 @@ import { toast } from "@/components/ui/sonner";
 import { useForm } from "@tanstack/react-form";
 import * as z from "zod";
 import { authClient } from "@/lib/auth-client";
-import default_avatar from "../../../../../../public/default-avatar-profile.jpg";
 import {
   BadgeCheck,
   BriefcaseBusiness,
@@ -35,12 +34,10 @@ import {
   PencilLine,
   Save,
   UserRound,
+  X,
 } from "lucide-react";
 import { updateUser } from "@/action/user.action";
-import {
-  createTutorProfile,
-  updateTutorProfile,
-} from "@/action/tutor.action";
+import { createTutorProfile, updateTutorProfile } from "@/action/tutor.action";
 import { Categories, TutorProfile } from "@/types";
 
 const BD_PHONE_REGEX = /^(?:\+?88)?01[3-9]\d{8}$/;
@@ -59,6 +56,7 @@ const AccountSchema = z.object({
 const ProfessionalSchema = z.object({
   categoryId: z.string().min(1, "Category is required"),
   bio: z.string().max(255, "Bio must be at most 255 characters"),
+  tags: z.array(z.string()),
   experienceYears: z.string().refine((value) => {
     const num = Number(value);
     return !isNaN(num) && num >= 0;
@@ -80,6 +78,8 @@ type TutorProfileClientProps = {
   initialCategories: Categories[];
   userId: string;
 };
+
+const DEFAULT_AVATAR = "/default-avatar-profile.jpg";
 
 export default function TutorProfileClient({
   initialName,
@@ -104,12 +104,13 @@ export default function TutorProfileClient({
   const [status] = useState(initialStatus);
 
   const [profileImagePreview, setProfileImagePreview] = useState<string>(
-    initialImage || default_avatar.src,
+    initialImage || DEFAULT_AVATAR,
   );
 
   const [tutorData, setTutorData] = useState<TutorProfile | undefined>(
     initialTutorProfile,
   );
+  const [tagInput, setTagInput] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const selectedFileRef = useRef<File | null>(null);
@@ -192,6 +193,7 @@ export default function TutorProfileClient({
     defaultValues: {
       categoryId: tutorData?.categoriesId || "",
       bio: tutorData?.bio || "",
+      tags: tutorData?.tags || [],
       experienceYears: tutorData?.experienceYears?.toString() || "",
       hourlyRate: tutorData?.hourlyRate?.toString() || "",
     },
@@ -201,17 +203,26 @@ export default function TutorProfileClient({
         isCreating ? "Creating profile..." : "Saving changes...",
       );
 
-      const profilePayload = {
+      const createPayload = {
         userId,
         categoriesId: value.categoryId,
         bio: value.bio,
+        tags: value.tags,
+        experienceYears: Number(value.experienceYears),
+        hourlyRate: Number(value.hourlyRate),
+      };
+
+      const updatePayload = {
+        categoriesId: value.categoryId || undefined,
+        bio: value.bio || undefined,
+        tags: value.tags,
         experienceYears: Number(value.experienceYears),
         hourlyRate: Number(value.hourlyRate),
       };
 
       try {
         if (isCreating) {
-          const response = await createTutorProfile(profilePayload);
+          const response = await createTutorProfile(createPayload);
           if (response.error || !response.data) {
             toast.error(response.error?.message || "Failed to create profile", {
               id: toastId,
@@ -221,7 +232,7 @@ export default function TutorProfileClient({
           setIsCreating(false);
           toast.success("Profile created successfully!", { id: toastId });
         } else {
-          const response = await updateTutorProfile(profilePayload);
+          const response = await updateTutorProfile(updatePayload);
           if (response.error || !response.data) {
             toast.error(response.error?.message || "Failed to update profile", {
               id: toastId,
@@ -288,6 +299,11 @@ export default function TutorProfileClient({
                     );
                     professionalForm.setFieldValue("bio", tutorData.bio || "");
                     professionalForm.setFieldValue(
+                      "tags",
+                      tutorData.tags || [],
+                    );
+                    setTagInput("");
+                    professionalForm.setFieldValue(
                       "experienceYears",
                       tutorData.experienceYears?.toString() || "",
                     );
@@ -344,10 +360,7 @@ export default function TutorProfileClient({
                     disabled={isFormDisableMode}
                     onClick={() => fileInputRef.current?.click()}
                   >
-                    <Camera
-                      className="mr-2 size-4"
-                      suppressHydrationWarning
-                    />
+                    <Camera className="mr-2 size-4" suppressHydrationWarning />
                     Add Profile Picture
                   </Button>
                 ) : null}
@@ -362,17 +375,14 @@ export default function TutorProfileClient({
                     name="name"
                     children={(field) => {
                       const isInvalid =
-                        field.state.meta.isTouched &&
-                        !field.state.meta.isValid;
+                        field.state.meta.isTouched && !field.state.meta.isValid;
                       return (
                         <Field>
                           <Input
                             id="name"
                             value={field.state.value}
                             disabled={isFormDisableMode}
-                            onChange={(e) =>
-                              field.handleChange(e.target.value)
-                            }
+                            onChange={(e) => field.handleChange(e.target.value)}
                           />
                           {isInvalid && (
                             <FieldError errors={field.state.meta.errors} />
@@ -394,8 +404,7 @@ export default function TutorProfileClient({
                     name="email"
                     children={(field) => {
                       const isInvalid =
-                        field.state.meta.isTouched &&
-                        !field.state.meta.isValid;
+                        field.state.meta.isTouched && !field.state.meta.isValid;
                       return (
                         <Field>
                           <Input
@@ -403,9 +412,7 @@ export default function TutorProfileClient({
                             type="email"
                             value={field.state.value}
                             disabled={isFormDisableMode}
-                            onChange={(e) =>
-                              field.handleChange(e.target.value)
-                            }
+                            onChange={(e) => field.handleChange(e.target.value)}
                           />
                           {isInvalid && (
                             <FieldError errors={field.state.meta.errors} />
@@ -427,8 +434,7 @@ export default function TutorProfileClient({
                     name="phone"
                     children={(field) => {
                       const isInvalid =
-                        field.state.meta.isTouched &&
-                        !field.state.meta.isValid;
+                        field.state.meta.isTouched && !field.state.meta.isValid;
                       return (
                         <Field>
                           <Input
@@ -436,9 +442,7 @@ export default function TutorProfileClient({
                             type="tel"
                             value={field.state.value ?? "01XXXXXXXXX"}
                             disabled={isFormDisableMode}
-                            onChange={(e) =>
-                              field.handleChange(e.target.value)
-                            }
+                            onChange={(e) => field.handleChange(e.target.value)}
                           />
                           {isInvalid && (
                             <FieldError errors={field.state.meta.errors} />
@@ -517,10 +521,7 @@ export default function TutorProfileClient({
                                   field.handleChange(value)
                                 }
                               >
-                                <SelectTrigger
-                                  id="category"
-                                  className="w-full"
-                                >
+                                <SelectTrigger id="category" className="w-full">
                                   <SelectValue placeholder="Select category" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -544,6 +545,129 @@ export default function TutorProfileClient({
                     ) : (
                       <p className="rounded-md border bg-muted/30 px-3 py-2 text-sm font-medium">
                         {tutorData?.category?.name || "-"}
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label htmlFor="tags">Tags</Label>
+                    {isFormEditMode ? (
+                      <professionalForm.Field
+                        name="tags"
+                        children={(field) => {
+                          const isInvalid =
+                            field.state.meta.isTouched &&
+                            !field.state.meta.isValid;
+
+                          const addTag = (rawTag: string) => {
+                            const normalizedTag = rawTag.trim();
+                            if (!normalizedTag) {
+                              return;
+                            }
+
+                            const exists = field.state.value.some(
+                              (tag) =>
+                                tag.toLowerCase() ===
+                                normalizedTag.toLowerCase(),
+                            );
+
+                            if (!exists) {
+                              field.handleChange([
+                                ...field.state.value,
+                                normalizedTag,
+                              ]);
+                            }
+                          };
+
+                          const removeTag = (indexToRemove: number) => {
+                            field.handleChange(
+                              field.state.value.filter(
+                                (_, index) => index !== indexToRemove,
+                              ),
+                            );
+                          };
+
+                          const handleTagKeyDown = (
+                            event: KeyboardEvent<HTMLInputElement>,
+                          ) => {
+                            if (
+                              event.key === " " ||
+                              event.key === "Enter" ||
+                              event.key === ","
+                            ) {
+                              event.preventDefault();
+                              addTag(tagInput);
+                              setTagInput("");
+                            }
+
+                            if (
+                              event.key === "Backspace" &&
+                              !tagInput &&
+                              field.state.value.length > 0
+                            ) {
+                              removeTag(field.state.value.length - 1);
+                            }
+                          };
+
+                          return (
+                            <Field>
+                              <div className="rounded-md border border-input px-2 py-2">
+                                <div className="mb-2 flex flex-wrap gap-2">
+                                  {field.state.value.map((tag, index) => (
+                                    <Badge
+                                      key={`${tag}-${index}`}
+                                      variant="secondary"
+                                      className="gap-1"
+                                    >
+                                      {tag}
+                                      <button
+                                        type="button"
+                                        aria-label={`Remove ${tag}`}
+                                        className="rounded-full p-0.5 hover:bg-muted"
+                                        onClick={() => removeTag(index)}
+                                      >
+                                        <X
+                                          className="size-3"
+                                          suppressHydrationWarning
+                                        />
+                                      </button>
+                                    </Badge>
+                                  ))}
+                                </div>
+
+                                <Input
+                                  id="tags"
+                                  placeholder="Type tag and press space"
+                                  value={tagInput}
+                                  disabled={isFormDisableMode}
+                                  className="border-0 p-1 shadow-none focus-visible:ring-0"
+                                  onKeyDown={handleTagKeyDown}
+                                  onChange={(e) => setTagInput(e.target.value)}
+                                  onBlur={() => {
+                                    if (tagInput.trim()) {
+                                      addTag(tagInput);
+                                      setTagInput("");
+                                    }
+                                  }}
+                                />
+                              </div>
+                              {isInvalid && (
+                                <FieldError errors={field.state.meta.errors} />
+                              )}
+                            </Field>
+                          );
+                        }}
+                      />
+                    ) : tutorData?.tags?.length ? (
+                      <div className="flex flex-wrap gap-2 rounded-md border bg-muted/30 px-3 py-2">
+                        {tutorData.tags.map((tag) => (
+                          <Badge key={tag} variant="secondary">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="rounded-md border bg-muted/30 px-3 py-2 text-sm font-medium">
+                        -
                       </p>
                     )}
                   </div>
@@ -656,8 +780,8 @@ export default function TutorProfileClient({
             ) : (
               <div className="flex justify-center py-6">
                 <p className="text-sm text-muted-foreground">
-                  No professional profile yet. Click "Create Profile" to
-                  get started.
+                  No professional profile yet. Click "Create Profile" to get
+                  started.
                 </p>
               </div>
             )}

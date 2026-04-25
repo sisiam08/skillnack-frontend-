@@ -1,10 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import default_avatar from "../../../../../../public/default-avatar-profile.jpg";
 import Image from "next/image";
 import { TutorCardProps } from "@/types";
 import Link from "next/link";
 import { Star } from "lucide-react";
+
+const DEFAULT_AVATAR = "/default-avatar-profile.jpg";
 
 export default function TutorCard({
   tutor,
@@ -16,8 +17,13 @@ export default function TutorCard({
   // Extract expertise title from category
   const expertiseTitle = tutor.category?.name || "Tutor";
 
-  // Extract tags (max 3)
-  const tags = tutor.category ? [tutor.category.name] : [];
+  // Prefer tutor-provided tags; fallback to category label
+  const tags =
+    tutor.tags?.length > 0
+      ? tutor.tags
+      : tutor.category?.name
+        ? [tutor.category.name]
+        : [];
 
   const availableDays = tutor.availability?.map((slot) => slot.dayOfWeek);
   const today = new Date().getDay();
@@ -59,7 +65,7 @@ export default function TutorCard({
         <div className="flex items-start gap-3">
           <div className="relative size-16 shrink-0 overflow-hidden rounded-xl ring-2 ring-border/50">
             <Image
-              src={tutor.user?.image || default_avatar}
+              src={tutor.user?.image || DEFAULT_AVATAR}
               alt={tutor.user?.name ?? "Tutor"}
               fill
               unoptimized
@@ -91,10 +97,10 @@ export default function TutorCard({
         {/* Tags */}
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
-            {tags.slice(0, 3).map((tag, idx) => (
+            {tags.slice(0, 4).map((tag, idx) => (
               <span
                 key={idx}
-                className="inline-block rounded-full border border-border/60 bg-secondary/40 px-2.5 py-1 text-xs font-medium text-muted-foreground"
+                className="inline-block rounded-full border border-border/60 bg-secondary/40 px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
               >
                 {tag}
               </span>

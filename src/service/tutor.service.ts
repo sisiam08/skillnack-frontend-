@@ -1,5 +1,10 @@
 import { env } from "@/env";
-import { Filters, ServiceOptions, TutorProfileCreateData } from "@/types";
+import {
+  Filters,
+  ServiceOptions,
+  TutorProfileCreateData,
+  TutorProfileUpdateData,
+} from "@/types";
 import { cookies } from "next/headers";
 
 const API_URL = env.API_URL;
@@ -99,7 +104,7 @@ export const TutorService = {
   },
 
   updateTutorProfile: async function (
-    tutorProfileData: TutorProfileCreateData,
+    tutorProfileData: TutorProfileUpdateData,
   ) {
     try {
       const cookieStore = await cookies();

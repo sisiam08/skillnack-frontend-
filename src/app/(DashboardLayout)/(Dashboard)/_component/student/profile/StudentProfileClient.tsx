@@ -15,7 +15,6 @@ import { Separator } from "@/components/ui/separator";
 import { BadgeCheck, Camera, PencilLine, Save, UserRound } from "lucide-react";
 import { ChangeEvent, useRef, useState } from "react";
 import * as z from "zod";
-import default_avatar from "../../../../../../public/default-avatar-profile.jpg";
 import { toast } from "@/components/ui/sonner";
 import { useForm } from "@tanstack/react-form";
 import { authClient } from "@/lib/auth-client";
@@ -46,6 +45,8 @@ type StudentProfileClientProps = {
   initialImage?: string;
 };
 
+const DEFAULT_AVATAR = "/default-avatar-profile.jpg";
+
 export default function StudentProfileClient({
   initialName,
   initialEmail,
@@ -63,7 +64,7 @@ export default function StudentProfileClient({
   const [status] = useState(initialStatus);
 
   const [profileImagePreview, setProfileImagePreview] = useState<string>(
-    initialImage || default_avatar.src,
+    initialImage || DEFAULT_AVATAR,
   );
 
   const fileInputRef = useRef<HTMLInputElement>(null);
