@@ -26,6 +26,10 @@ function useMobileMenu() {
 
 export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
   const { mobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useMobileMenu();
+  const desktopNavLinkClass =
+    "rounded-md px-2 py-1 text-sm font-medium text-brand-ink dark:text-brand-ink transition-colors duration-200 hover:text-brand-strong dark:hover:text-brand";
+  const mobileNavLinkClass =
+    "rounded-xl px-3 py-3 text-sm font-medium text-brand-ink dark:text-brand-ink transition-colors duration-200 hover:text-brand-strong dark:hover:text-brand";
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-[color-mix(in_oklab,var(--background)_86%,#fff7ed)]/90 dark:bg-card backdrop-blur-md border-b border-brand/10 dark:border-brand/20">
@@ -48,33 +52,21 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6">
-            <Link
-              className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors"
-              href="/"
-            >
+            <Link className={desktopNavLinkClass} href="/">
               Home
             </Link>
 
-            <Link
-              className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors"
-              href="/#how-it-works"
-            >
+            <Link className={desktopNavLinkClass} href="/#how-it-works">
               How it Works
             </Link>
 
             {!isLoggedIn && (
               <>
-                <Link
-                  className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors"
-                  href="/login"
-                >
+                <Link className={desktopNavLinkClass} href="/login">
                   Login
                 </Link>
 
-                <Link
-                  className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors"
-                  href="/signup"
-                >
+                <Link className={desktopNavLinkClass} href="/signup">
                   Register
                 </Link>
 
@@ -88,10 +80,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
 
             {isLoggedIn && (
               <>
-                <Link
-                  className="text-sm font-medium text-brand-ink dark:text-brand-ink hover:text-brand transition-colors"
-                  href="/dashboard"
-                >
+                <Link className={desktopNavLinkClass} href="/dashboard">
                   Dashboard
                 </Link>
 
@@ -137,7 +126,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                 <Link
                   href="/"
                   onClick={closeMobileMenu}
-                  className="rounded-xl px-3 py-3 text-sm font-medium text-brand-ink transition-colors hover:bg-muted hover:text-brand"
+                  className={mobileNavLinkClass}
                 >
                   Home
                 </Link>
@@ -145,7 +134,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                 <Link
                   href="/#how-it-works"
                   onClick={closeMobileMenu}
-                  className="rounded-xl px-3 py-3 text-sm font-medium text-brand-ink transition-colors hover:bg-muted hover:text-brand"
+                  className={mobileNavLinkClass}
                 >
                   How it works
                 </Link>
@@ -155,7 +144,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                     <Link
                       href="/login"
                       onClick={closeMobileMenu}
-                      className="rounded-xl px-3 py-3 text-sm font-medium text-brand-ink transition-colors hover:bg-muted hover:text-brand"
+                      className={mobileNavLinkClass}
                     >
                       Login
                     </Link>
@@ -163,7 +152,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                     <Link
                       href="/signup"
                       onClick={closeMobileMenu}
-                      className="rounded-xl px-3 py-3 text-sm font-medium text-brand-ink transition-colors hover:bg-muted hover:text-brand"
+                      className={mobileNavLinkClass}
                     >
                       Register
                     </Link>
@@ -182,7 +171,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                     <Link
                       href="/dashboard"
                       onClick={closeMobileMenu}
-                      className="rounded-xl px-3 py-3 text-sm font-medium text-brand-ink transition-colors hover:bg-muted hover:text-brand"
+                      className={mobileNavLinkClass}
                     >
                       Dashboard
                     </Link>

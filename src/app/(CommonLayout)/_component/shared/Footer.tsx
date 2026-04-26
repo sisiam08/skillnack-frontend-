@@ -6,24 +6,24 @@ const navLinks = [
   {
     title: "Explore",
     links: [
-      { label: "Find Tutors", href: "/find_tutors" },
-      { label: "Featured Tutors", href: "/#featured-tutors" },
+      { label: "Find Tutors", href: "/find-tutors" },
+      { label: "How It Works", href: "/#how-it-works" },
       { label: "Login", href: "/login" },
-      { label: "Register", href: "/register" },
+      { label: "Sign Up", href: "/signup" },
     ],
   },
   {
     title: "For Students",
     links: [
-      { label: "Find a Tutor", href: "/find_tutors" },
-      { label: "Book a Session", href: "/find_tutors" },
+      { label: "Find a Tutor", href: "/find-tutors" },
+      { label: "Book a Session", href: "/find-tutors" },
       { label: "Student Dashboard", href: "/dashboard" },
     ],
   },
   {
     title: "For Tutors",
     links: [
-      { label: "Become a Tutor", href: "/register" },
+      { label: "Become a Tutor", href: "/signup" },
       { label: "Tutor Dashboard", href: "/tutor-dashboard" },
       { label: "Manage Availability", href: "/tutor-dashboard/availability" },
     ],
