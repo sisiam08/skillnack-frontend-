@@ -46,7 +46,7 @@ export default function Footer() {
                   suppressHydrationWarning
                 />
               </div>
-              <span className="ui-title-brand">Skillnack</span>
+              <span className="ui-title-brand">Ilmefy</span>
             </Link>
 
             <p className="text-sm leading-relaxed text-muted-foreground">
@@ -79,7 +79,7 @@ export default function Footer() {
         <div className="mt-12">
           <Separator className="bg-brand/15 dark:bg-brand/25" />
           <div className="flex items-center justify-center pt-8 text-xs text-muted-foreground md:flex-row">
-            <p>&copy; {currentYear} Skillnack. All rights reserved.</p>
+            <p>&copy; {currentYear} Ilmefy. All rights reserved.</p>
           </div>
         </div>
       </div>

@@ -39,7 +39,7 @@ export function ProblemSection() {
           </h2>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">
             You jump from YouTube to forums, still need help right now, and end
-            up paying for tutors you do not need long term. Skillnack gives you
+            up paying for tutors you do not need long term. Ilmefy gives you
             fast, focused help when the problem is urgent.
           </p>
         </div>

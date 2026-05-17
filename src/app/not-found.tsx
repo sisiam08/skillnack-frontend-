@@ -14,7 +14,7 @@ export default function NotFound() {
       <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col items-center justify-center px-6 py-16 text-center">
         <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/15 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand shadow-sm dark:bg-zinc-900/80">
           <GraduationCap className="size-4 text-brand" />
-          Skillnack
+          Ilmefy
         </div>
 
         <p className="text-7xl font-black tracking-tight text-brand-ink sm:text-8xl lg:text-9xl dark:text-white">

@@ -1,6 +1,6 @@
 # Frontend
 
-Next.js 16 frontend for the Skillnack tutoring platform.
+Next.js 16 frontend for the Ilmefy tutoring platform.
 
 The app handles public pages, authentication, role-based dashboards, tutor and student flows, and live class features.
 

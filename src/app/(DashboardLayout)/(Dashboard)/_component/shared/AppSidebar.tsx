@@ -67,7 +67,7 @@ export function AppSidebar({
               />
             </div>
 
-            <span className="ui-title-brand">Skillnack</span>
+            <span className="ui-title-brand">Ilmefy</span>
           </div>
         </Link>
       </SidebarHeader>

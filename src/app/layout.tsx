@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Skillnack - Find Your Perfect Tutor",
+  title: "Ilmefy - Find Your Perfect Tutor",
   description: "Connect with expert tutors for personalized 1-on-1 learning.",
 };
 

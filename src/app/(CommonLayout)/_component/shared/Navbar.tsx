@@ -46,7 +46,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                 />
               </div>
 
-              <span className="ui-title-brand">Skillnack</span>
+              <span className="ui-title-brand">Ilmefy</span>
             </div>
           </Link>
 
