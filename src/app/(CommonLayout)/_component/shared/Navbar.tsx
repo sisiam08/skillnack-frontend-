@@ -2,9 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { GraduationCap } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ModeToggle } from "@/components/shared/ModeToggle";
+import { useTheme } from "next-themes";
+import Logo from "./Logo";
 
 function useMobileMenu() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -25,7 +26,17 @@ function useMobileMenu() {
 }
 
 export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const { mobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useMobileMenu();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
   const desktopNavLinkClass =
     "rounded-md px-2 py-1 text-sm font-medium text-brand-ink dark:text-brand-ink transition-colors duration-200 hover:text-brand-strong dark:hover:text-brand";
   const mobileNavLinkClass =
@@ -36,19 +47,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
       <div className="relative max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16 md:h-18">
           {/* Logo */}
-          <Link href={"/"}>
-            <div className="flex items-center gap-3">
-              <div className="size-9 bg-brand rounded-lg flex items-center justify-center text-white">
-                <GraduationCap
-                  className="size-5"
-                  strokeWidth={2.2}
-                  suppressHydrationWarning
-                />
-              </div>
-
-              <span className="ui-title-brand">Ilmefy</span>
-            </div>
-          </Link>
+          <Logo />
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6">

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { GraduationCap } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import Logo from "./Logo";
 
 const navLinks = [
   {
@@ -38,16 +38,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
           <div className="space-y-4">
-            <Link href="/" className="flex w-fit items-center gap-2">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-brand text-white">
-                <GraduationCap
-                  className="size-5"
-                  strokeWidth={2.2}
-                  suppressHydrationWarning
-                />
-              </div>
-              <span className="ui-title-brand">Ilmefy</span>
-            </Link>
+            <Logo height={88} h={22} />
 
             <p className="text-sm leading-relaxed text-muted-foreground">
               The world&apos;s leading marketplace for 1-on-1 expert tutoring.
