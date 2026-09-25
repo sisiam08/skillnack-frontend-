@@ -10,3 +10,9 @@ export enum UserStatus {
   UNBAN = "UNBAN",
   BAN = "BAN",
 };
+
+export enum VerificationStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+};

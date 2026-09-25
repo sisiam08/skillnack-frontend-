@@ -11,6 +11,18 @@ export const AdminRoutes: Routes = {
       url: "/admin-dashboard/category",
     },
     {
+      title: "Subjects",
+      url: "/admin-dashboard/subjects",
+    },
+    {
+      title: "Skills",
+      url: "/admin-dashboard/skills",
+    },
+    {
+      title: "Verification",
+      url: "/admin-dashboard/verification",
+    },
+    {
       title: "Users",
       url: "/admin-dashboard/users",
     },

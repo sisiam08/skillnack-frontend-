@@ -2,6 +2,8 @@ import Image from "next/image";
 import { TutorService } from "@/service/tutor.service";
 import { Card, CardContent } from "@/components/ui/card";
 import { ParamsProps, TutorProfile } from "@/types";
+import { VerificationStatus } from "@/constants/status";
+import { BadgeCheck, ExternalLink } from "lucide-react";
 
 import TutorBookingPanel from "../../_component/page/find-tutors/id/TutorBookingPanel";
 
@@ -41,13 +43,22 @@ export default async function TutorProfileDetailPage({ params }: ParamsProps) {
         )
       : 0;
 
+  const totalOutcomes = tutorDetails?.totalOutcomesRecorded ?? 0;
+  const solveRate =
+    totalOutcomes > 0
+      ? Math.round(((tutorDetails?.solvedCount ?? 0) / totalOutcomes) * 100)
+      : null;
+
   const expertiseTags = Array.from(
     new Set(
-      [...(tutorDetails?.tags || []), tutorDetails?.category?.name].filter(
-        Boolean,
-      ) as string[],
+      [
+        ...(tutorDetails?.subjects?.map((subject) => subject.name) || []),
+        ...(tutorDetails?.skills?.map((skill) => skill.name) || []),
+        ...(tutorDetails?.tags || []),
+        tutorDetails?.category?.name,
+      ].filter(Boolean) as string[],
     ),
-  ).slice(0, 6);
+  ).slice(0, 8);
 
   return (
     <main className="relative min-h-screen overflow-hidden pb-28 pt-8 lg:pb-14">
@@ -69,13 +80,60 @@ export default async function TutorProfileDetailPage({ params }: ParamsProps) {
                   </div>
 
                   <div className="flex-1">
-                    <h1 className="text-2xl font-black tracking-tight text-foreground sm:text-3xl">
+                    <h1 className="flex flex-wrap items-center gap-2 text-2xl font-black tracking-tight text-foreground sm:text-3xl">
                       {tutorDetails?.user?.name ?? "Tutor"}
+                      {tutorDetails?.verificationStatus ===
+                      VerificationStatus.APPROVED ? (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-brand/10 px-2 py-0.5 text-xs font-semibold text-brand">
+                          <BadgeCheck className="size-3.5" />
+                          Verified
+                        </span>
+                      ) : null}
                     </h1>
+
+                    {tutorDetails?.headline ? (
+                      <p className="mt-1 text-sm font-semibold text-foreground">
+                        {tutorDetails.headline}
+                      </p>
+                    ) : null}
+
+                    {tutorDetails?.currentRoleOrInstitution ? (
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {tutorDetails.currentRoleOrInstitution}
+                      </p>
+                    ) : null}
+
                     <p className="mt-2 text-sm font-medium text-muted-foreground">
                       {tutorDetails?.category?.name ?? "Subject"} Tutor •{" "}
                       {tutorDetails?.experienceYears ?? 0}+ Years Experience
                     </p>
+
+                    {[
+                      { label: "LinkedIn", url: tutorDetails?.linkedinUrl },
+                      { label: "GitHub", url: tutorDetails?.githubUrl },
+                      { label: "Portfolio", url: tutorDetails?.portfolioUrl },
+                    ].some((link) => Boolean(link.url)) ? (
+                      <div className="mt-2 flex flex-wrap gap-3">
+                        {[
+                          { label: "LinkedIn", url: tutorDetails?.linkedinUrl },
+                          { label: "GitHub", url: tutorDetails?.githubUrl },
+                          { label: "Portfolio", url: tutorDetails?.portfolioUrl },
+                        ]
+                          .filter((link) => Boolean(link.url))
+                          .map((link) => (
+                            <a
+                              key={link.label}
+                              href={link.url as string}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-xs font-medium text-brand hover:underline"
+                            >
+                              <ExternalLink className="size-3" />
+                              {link.label}
+                            </a>
+                          ))}
+                      </div>
+                    ) : null}
 
                     <div className="mt-3 flex flex-wrap gap-2">
                       {expertiseTags.map((tag) => (
@@ -95,11 +153,22 @@ export default async function TutorProfileDetailPage({ params }: ParamsProps) {
                   </div>
                 </div>
 
-                <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+                <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-5">
                   <div className="rounded-xl border border-border bg-muted/30 p-3">
                     <p className="text-xs text-muted-foreground">Rating</p>
                     <p className="mt-1 text-lg font-bold text-foreground">
                       {avgRating}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-border bg-muted/30 p-3">
+                    <p className="text-xs text-muted-foreground">Solve rate</p>
+                    <p className="mt-1 text-lg font-bold text-foreground">
+                      {solveRate !== null ? `${solveRate}%` : "—"}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground">
+                      {solveRate !== null
+                        ? `${totalOutcomes} reported`
+                        : "Not enough data"}
                     </p>
                   </div>
                   <div className="rounded-xl border border-border bg-muted/30 p-3">

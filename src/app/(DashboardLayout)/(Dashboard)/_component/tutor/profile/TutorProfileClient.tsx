@@ -33,12 +33,15 @@ import {
   Camera,
   PencilLine,
   Save,
+  ShieldAlert,
   UserRound,
   X,
 } from "lucide-react";
 import { updateUser } from "@/action/user.action";
 import { createTutorProfile, updateTutorProfile } from "@/action/tutor.action";
-import { Categories, TutorProfile } from "@/types";
+import { Categories, TaxonomyItem, TutorProfile } from "@/types";
+import { VerificationStatus } from "@/constants/status";
+import TaxonomyMultiSelect from "@/components/shared/TaxonomyMultiSelect";
 
 const BD_PHONE_REGEX = /^(?:\+?88)?01[3-9]\d{8}$/;
 
@@ -57,6 +60,15 @@ const ProfessionalSchema = z.object({
   categoryId: z.string().min(1, "Category is required"),
   bio: z.string().max(255, "Bio must be at most 255 characters"),
   tags: z.array(z.string()),
+  subjectIds: z.array(z.string()),
+  skillIds: z.array(z.string()),
+  headline: z.string().max(100, "Headline must be at most 100 characters"),
+  currentRoleOrInstitution: z
+    .string()
+    .max(200, "Must be at most 200 characters"),
+  linkedinUrl: z.union([z.string().url("Enter a valid URL"), z.literal("")]),
+  githubUrl: z.union([z.string().url("Enter a valid URL"), z.literal("")]),
+  portfolioUrl: z.union([z.string().url("Enter a valid URL"), z.literal("")]),
   experienceYears: z.string().refine((value) => {
     const num = Number(value);
     return !isNaN(num) && num >= 0;
@@ -76,6 +88,8 @@ type TutorProfileClientProps = {
   initialImage?: string;
   initialTutorProfile?: TutorProfile;
   initialCategories: Categories[];
+  initialSubjects: TaxonomyItem[];
+  initialSkills: TaxonomyItem[];
   userId: string;
 };
 
@@ -90,9 +104,10 @@ export default function TutorProfileClient({
   initialImage,
   initialTutorProfile,
   initialCategories,
+  initialSubjects,
+  initialSkills,
   userId,
 }: TutorProfileClientProps) {
-  const hasProfile = Boolean(initialTutorProfile);
   const [isEditing, setIsEditing] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
 
@@ -111,6 +126,8 @@ export default function TutorProfileClient({
     initialTutorProfile,
   );
   const [tagInput, setTagInput] = useState("");
+
+  const hasProfile = Boolean(tutorData);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const selectedFileRef = useRef<File | null>(null);
@@ -194,6 +211,13 @@ export default function TutorProfileClient({
       categoryId: tutorData?.categoriesId || "",
       bio: tutorData?.bio || "",
       tags: tutorData?.tags || [],
+      subjectIds: tutorData?.subjects?.map((subject) => subject.id) || [],
+      skillIds: tutorData?.skills?.map((skill) => skill.id) || [],
+      headline: tutorData?.headline || "",
+      currentRoleOrInstitution: tutorData?.currentRoleOrInstitution || "",
+      linkedinUrl: tutorData?.linkedinUrl || "",
+      githubUrl: tutorData?.githubUrl || "",
+      portfolioUrl: tutorData?.portfolioUrl || "",
       experienceYears: tutorData?.experienceYears?.toString() || "",
       hourlyRate: tutorData?.hourlyRate?.toString() || "",
     },
@@ -208,6 +232,13 @@ export default function TutorProfileClient({
         categoriesId: value.categoryId,
         bio: value.bio,
         tags: value.tags,
+        subjectIds: value.subjectIds,
+        skillIds: value.skillIds,
+        headline: value.headline || null,
+        currentRoleOrInstitution: value.currentRoleOrInstitution || null,
+        linkedinUrl: value.linkedinUrl || null,
+        githubUrl: value.githubUrl || null,
+        portfolioUrl: value.portfolioUrl || null,
         experienceYears: Number(value.experienceYears),
         hourlyRate: Number(value.hourlyRate),
       };
@@ -216,6 +247,13 @@ export default function TutorProfileClient({
         categoriesId: value.categoryId || undefined,
         bio: value.bio || undefined,
         tags: value.tags,
+        subjectIds: value.subjectIds,
+        skillIds: value.skillIds,
+        headline: value.headline || undefined,
+        currentRoleOrInstitution: value.currentRoleOrInstitution || undefined,
+        linkedinUrl: value.linkedinUrl || undefined,
+        githubUrl: value.githubUrl || undefined,
+        portfolioUrl: value.portfolioUrl || undefined,
         experienceYears: Number(value.experienceYears),
         hourlyRate: Number(value.hourlyRate),
       };
@@ -229,7 +267,9 @@ export default function TutorProfileClient({
             });
             return;
           }
+          setTutorData(response.data.data as TutorProfile);
           setIsCreating(false);
+          setIsEditing(false);
           toast.success("Profile created successfully!", { id: toastId });
         } else {
           const response = await updateTutorProfile(updatePayload);
@@ -239,6 +279,7 @@ export default function TutorProfileClient({
             });
             return;
           }
+          setTutorData(response.data.data as TutorProfile);
           setIsEditing(false);
           toast.success("Changes saved successfully!", { id: toastId });
         }
@@ -302,6 +343,34 @@ export default function TutorProfileClient({
                       "tags",
                       tutorData.tags || [],
                     );
+                    professionalForm.setFieldValue(
+                      "subjectIds",
+                      tutorData.subjects?.map((subject) => subject.id) || [],
+                    );
+                    professionalForm.setFieldValue(
+                      "skillIds",
+                      tutorData.skills?.map((skill) => skill.id) || [],
+                    );
+                    professionalForm.setFieldValue(
+                      "headline",
+                      tutorData.headline || "",
+                    );
+                    professionalForm.setFieldValue(
+                      "currentRoleOrInstitution",
+                      tutorData.currentRoleOrInstitution || "",
+                    );
+                    professionalForm.setFieldValue(
+                      "linkedinUrl",
+                      tutorData.linkedinUrl || "",
+                    );
+                    professionalForm.setFieldValue(
+                      "githubUrl",
+                      tutorData.githubUrl || "",
+                    );
+                    professionalForm.setFieldValue(
+                      "portfolioUrl",
+                      tutorData.portfolioUrl || "",
+                    );
                     setTagInput("");
                     professionalForm.setFieldValue(
                       "experienceYears",
@@ -321,6 +390,39 @@ export default function TutorProfileClient({
           </div>
         </CardHeader>
       </Card>
+
+      {hasProfile &&
+      tutorData?.verificationStatus &&
+      tutorData.verificationStatus !== VerificationStatus.APPROVED ? (
+        <Card
+          className={
+            tutorData.verificationStatus === VerificationStatus.REJECTED
+              ? "border-red-200 bg-red-50/60 dark:border-red-900 dark:bg-red-950/30"
+              : "border-amber-200 bg-amber-50/60 dark:border-amber-900 dark:bg-amber-950/30"
+          }
+        >
+          <CardContent className="flex items-start gap-3 p-4">
+            {tutorData.verificationStatus === VerificationStatus.REJECTED ? (
+              <ShieldAlert className="mt-0.5 size-5 shrink-0 text-red-600 dark:text-red-400" />
+            ) : (
+              <BadgeCheck className="mt-0.5 size-5 shrink-0 text-amber-600 dark:text-amber-400" />
+            )}
+            <div className="space-y-1 text-sm">
+              <p className="font-semibold">
+                {tutorData.verificationStatus === VerificationStatus.PENDING
+                  ? "Verification pending"
+                  : "Verification rejected"}
+              </p>
+              <p className="text-muted-foreground">
+                {tutorData.verificationStatus === VerificationStatus.PENDING
+                  ? "Your profile is under review by an admin and is not shown in public search yet."
+                  : tutorData.rejectionReason ||
+                    "Please update your profile and contact support for re-review."}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
 
       <form
         onSubmit={handleBothSubmit}
@@ -548,6 +650,86 @@ export default function TutorProfileClient({
                       </p>
                     )}
                   </div>
+                  <div className="space-y-2">
+                    <Label>Subjects</Label>
+                    {isFormEditMode ? (
+                      <professionalForm.Field
+                        name="subjectIds"
+                        children={(field) => {
+                          const isInvalid =
+                            field.state.meta.isTouched &&
+                            !field.state.meta.isValid;
+                          return (
+                            <Field>
+                              <TaxonomyMultiSelect
+                                options={initialSubjects}
+                                selectedIds={field.state.value}
+                                onChange={(ids) => field.handleChange(ids)}
+                                disabled={isFormDisableMode}
+                                placeholder="Search subjects (e.g. Data Structures)"
+                              />
+                              {isInvalid && (
+                                <FieldError errors={field.state.meta.errors} />
+                              )}
+                            </Field>
+                          );
+                        }}
+                      />
+                    ) : tutorData?.subjects?.length ? (
+                      <div className="flex flex-wrap gap-2 rounded-md border bg-muted/30 px-3 py-2">
+                        {tutorData.subjects.map((subject) => (
+                          <Badge key={subject.id} variant="secondary">
+                            {subject.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="rounded-md border bg-muted/30 px-3 py-2 text-sm font-medium">
+                        -
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Skills</Label>
+                    {isFormEditMode ? (
+                      <professionalForm.Field
+                        name="skillIds"
+                        children={(field) => {
+                          const isInvalid =
+                            field.state.meta.isTouched &&
+                            !field.state.meta.isValid;
+                          return (
+                            <Field>
+                              <TaxonomyMultiSelect
+                                options={initialSkills}
+                                selectedIds={field.state.value}
+                                onChange={(ids) => field.handleChange(ids)}
+                                disabled={isFormDisableMode}
+                                placeholder="Search skills (e.g. React, SQL)"
+                              />
+                              {isInvalid && (
+                                <FieldError errors={field.state.meta.errors} />
+                              )}
+                            </Field>
+                          );
+                        }}
+                      />
+                    ) : tutorData?.skills?.length ? (
+                      <div className="flex flex-wrap gap-2 rounded-md border bg-muted/30 px-3 py-2">
+                        {tutorData.skills.map((skill) => (
+                          <Badge key={skill.id} variant="secondary">
+                            {skill.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="rounded-md border bg-muted/30 px-3 py-2 text-sm font-medium">
+                        -
+                      </p>
+                    )}
+                  </div>
+
                   <div className="space-y-2 sm:col-span-2">
                     <Label htmlFor="tags">Tags</Label>
                     {isFormEditMode ? (
@@ -775,6 +957,117 @@ export default function TutorProfileClient({
                       {tutorData?.bio || "-"}
                     </p>
                   )}
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label htmlFor="headline">Headline</Label>
+                    {isFormEditMode ? (
+                      <professionalForm.Field
+                        name="headline"
+                        children={(field) => (
+                          <Field>
+                            <Input
+                              id="headline"
+                              maxLength={100}
+                              placeholder="One-line intro (e.g. Software Engineer helping with DSA)"
+                              value={field.state.value}
+                              disabled={isFormDisableMode}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                            />
+                          </Field>
+                        )}
+                      />
+                    ) : (
+                      <p className="rounded-md border bg-muted/30 px-3 py-2 text-sm font-medium">
+                        {tutorData?.headline || "-"}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label htmlFor="currentRoleOrInstitution">
+                      Current role / institution
+                    </Label>
+                    {isFormEditMode ? (
+                      <professionalForm.Field
+                        name="currentRoleOrInstitution"
+                        children={(field) => (
+                          <Field>
+                            <Input
+                              id="currentRoleOrInstitution"
+                              maxLength={200}
+                              placeholder="e.g. Software Engineer at X, or CSE student, BUET"
+                              value={field.state.value}
+                              disabled={isFormDisableMode}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                            />
+                          </Field>
+                        )}
+                      />
+                    ) : (
+                      <p className="rounded-md border bg-muted/30 px-3 py-2 text-sm font-medium">
+                        {tutorData?.currentRoleOrInstitution || "-"}
+                      </p>
+                    )}
+                  </div>
+
+                  {[
+                    {
+                      name: "linkedinUrl" as const,
+                      label: "LinkedIn URL",
+                      placeholder: "https://linkedin.com/in/...",
+                    },
+                    {
+                      name: "githubUrl" as const,
+                      label: "GitHub URL",
+                      placeholder: "https://github.com/...",
+                    },
+                    {
+                      name: "portfolioUrl" as const,
+                      label: "Portfolio URL",
+                      placeholder: "https://your-portfolio.com",
+                    },
+                  ].map((linkField) => (
+                    <div key={linkField.name} className="space-y-2">
+                      <Label htmlFor={linkField.name}>{linkField.label}</Label>
+                      {isFormEditMode ? (
+                        <professionalForm.Field
+                          name={linkField.name}
+                          children={(field) => (
+                            <Field>
+                              <Input
+                                id={linkField.name}
+                                placeholder={linkField.placeholder}
+                                value={field.state.value}
+                                disabled={isFormDisableMode}
+                                onChange={(e) =>
+                                  field.handleChange(e.target.value)
+                                }
+                              />
+                            </Field>
+                          )}
+                        />
+                      ) : tutorData?.[linkField.name] ? (
+                        <a
+                          href={tutorData[linkField.name] as string}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block rounded-md border bg-muted/30 px-3 py-2 text-sm font-medium text-brand hover:underline"
+                        >
+                          {tutorData[linkField.name]}
+                        </a>
+                      ) : (
+                        <p className="rounded-md border bg-muted/30 px-3 py-2 text-sm font-medium">
+                          -
+                        </p>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </>
             ) : (

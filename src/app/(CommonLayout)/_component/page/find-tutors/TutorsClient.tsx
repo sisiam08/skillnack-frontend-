@@ -9,7 +9,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Categories, Filters, PaginationType, TutorProfile } from "@/types";
+import {
+  Categories,
+  Filters,
+  PaginationType,
+  TaxonomyItem,
+  TutorProfile,
+} from "@/types";
 import { Menu, Search, Sparkles, Users, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -17,11 +23,17 @@ type TutorsClientProps = {
   initialTutors: TutorProfile[];
   initialPagination: PaginationType;
   categories: Categories[];
+  subjects: TaxonomyItem[];
+  skills: TaxonomyItem[];
 };
 
 const DEFAULT_FILTERS: Filters = {
   search: undefined,
   category: undefined,
+  subjectId: undefined,
+  skillId: undefined,
+  availableToday: undefined,
+  availableNow: undefined,
   minPrice: undefined,
   maxPrice: undefined,
   rating: undefined,
@@ -36,6 +48,8 @@ export default function TutorsClient({
   initialTutors,
   initialPagination,
   categories,
+  subjects,
+  skills,
 }: TutorsClientProps) {
   const [filters, setFilters] = useState<Filters>({
     ...DEFAULT_FILTERS,
@@ -130,6 +144,10 @@ export default function TutorsClient({
   const hasActiveFilters = Boolean(
     filters.search ||
     filters.category ||
+    filters.subjectId ||
+    filters.skillId ||
+    filters.availableToday ||
+    filters.availableNow ||
     filters.minPrice ||
     filters.maxPrice ||
     filters.rating ||
@@ -253,6 +271,8 @@ export default function TutorsClient({
                 filters={filters}
                 setFilters={setFilters}
                 categories={categories}
+                subjects={subjects}
+                skills={skills}
               />
             </div>
           ) : null}
@@ -264,6 +284,8 @@ export default function TutorsClient({
             filters={filters}
             setFilters={setFilters}
             categories={categories}
+            subjects={subjects}
+            skills={skills}
           />
         </div>
 

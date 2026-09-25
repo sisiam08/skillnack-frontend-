@@ -1,3 +1,6 @@
+import { VerificationStatus } from "@/constants/status";
+import { SubjectType } from "./taxonomy.type";
+
 export type TutorProfile = {
   id: string;
   userId: string;
@@ -6,9 +9,20 @@ export type TutorProfile = {
   hourlyRate: number;
   experienceYears: number;
   tags: string[];
+  headline?: string | null;
+  currentRoleOrInstitution?: string | null;
+  linkedinUrl?: string | null;
+  githubUrl?: string | null;
+  portfolioUrl?: string | null;
+  verificationStatus?: VerificationStatus;
+  rejectionReason?: string | null;
   totalRating: number;
   totalReviews: number;
   totalCompletedBookings: number;
+  solvedCount?: number;
+  totalOutcomesRecorded?: number;
+  availableToday?: boolean;
+  availableNow?: boolean;
   user?: {
     id: string;
     name?: string;
@@ -27,6 +41,8 @@ export type TutorProfile = {
     startTime: string;
     endTime: string;
   }[];
+  subjects?: SubjectType[];
+  skills?: SubjectType[];
 };
 
 export type TutorCardProps = {
@@ -41,6 +57,13 @@ export type TutorProfileCreateData = {
   hourlyRate: number;
   experienceYears: number;
   tags: string[];
+  subjectIds?: string[];
+  skillIds?: string[];
+  headline?: string | null;
+  currentRoleOrInstitution?: string | null;
+  linkedinUrl?: string | null;
+  githubUrl?: string | null;
+  portfolioUrl?: string | null;
 };
 
 export type TutorProfileUpdateData = {
@@ -49,6 +72,13 @@ export type TutorProfileUpdateData = {
   hourlyRate?: number;
   experienceYears?: number;
   tags?: string[];
+  subjectIds?: string[];
+  skillIds?: string[];
+  headline?: string | null;
+  currentRoleOrInstitution?: string | null;
+  linkedinUrl?: string | null;
+  githubUrl?: string | null;
+  portfolioUrl?: string | null;
 };
 
 export type TutorStats = {

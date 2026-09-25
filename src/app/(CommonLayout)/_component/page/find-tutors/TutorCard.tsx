@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { TutorCardProps } from "@/types";
 import Link from "next/link";
-import { Star } from "lucide-react";
+import { BadgeCheck, Star } from "lucide-react";
+import { VerificationStatus } from "@/constants/status";
 
 const DEFAULT_AVATAR = "/default-avatar-profile.jpg";
 
@@ -13,6 +14,12 @@ export default function TutorCard({
 }: TutorCardProps) {
   const averageRating =
     tutor.totalReviews > 0 ? tutor.totalRating / tutor.totalReviews : 0;
+
+  const totalOutcomes = tutor.totalOutcomesRecorded ?? 0;
+  const solveRate =
+    totalOutcomes > 0
+      ? Math.round(((tutor.solvedCount ?? 0) / totalOutcomes) * 100)
+      : null;
 
   // Extract expertise title from category
   const expertiseTitle = tutor.category?.name || "Tutor";
@@ -48,12 +55,12 @@ export default function TutorCard({
     return null;
   };
 
-  const availabilityHint = availableDays?.includes(today)
-    ? "Available today"
-    : "Next available: " +
-      (availableDays && availableDays.length > 0
-        ? getNextAvailableDay(availableDays, today)
-        : "No availability");
+  // Note: `getNextAvailableDay` starts from tomorrow, so this never claims
+  // "today" when the authoritative `availableToday` flag is false.
+  const nextAvailableHint =
+    availableDays && availableDays.length > 0
+      ? getNextAvailableDay(availableDays, today)
+      : null;
 
   return (
     <Card
@@ -76,8 +83,14 @@ export default function TutorCard({
           <div className="min-w-0 flex-1">
             {/* Name + Rating */}
             <div className="mb-1 flex items-start justify-between gap-2">
-              <h3 className="truncate text-sm font-bold text-foreground">
+              <h3 className="flex items-center gap-1 truncate text-sm font-bold text-foreground">
                 {tutor.user?.name ?? "Unknown Tutor"}
+                {tutor.verificationStatus === VerificationStatus.APPROVED ? (
+                  <BadgeCheck
+                    className="size-3.5 shrink-0 text-brand"
+                    aria-label="Verified tutor"
+                  />
+                ) : null}
               </h3>
               <div className="flex shrink-0 items-center gap-1 text-amber-500">
                 <Star className="size-3.5 fill-current" />
@@ -109,10 +122,39 @@ export default function TutorCard({
         )}
 
         {/* Availability Hint */}
-        <p className="text-xs text-muted-foreground">
-          <span className="inline-block h-2 w-2 rounded-full bg-green-500 align-middle mr-1.5" />
-          {availabilityHint}
-        </p>
+        {tutor.availableNow ? (
+          <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+            <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-500 align-middle mr-1.5" />
+            Available now
+          </p>
+        ) : tutor.availableToday ? (
+          <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+            <span className="inline-block h-2 w-2 rounded-full bg-green-500 align-middle mr-1.5" />
+            Available today
+          </p>
+        ) : (
+          <p className="text-xs text-muted-foreground">
+            <span className="inline-block h-2 w-2 rounded-full bg-gray-400 align-middle mr-1.5" />
+            {nextAvailableHint
+              ? `Next available: ${nextAvailableHint}`
+              : "No availability"}
+          </p>
+        )}
+
+        {/* Solve rate */}
+        {solveRate !== null ? (
+          <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+            {solveRate}% problems solved
+            <span className="font-normal text-muted-foreground">
+              {" "}
+              ({totalOutcomes} {totalOutcomes === 1 ? "outcome" : "outcomes"})
+            </span>
+          </p>
+        ) : (
+          <p className="text-xs text-muted-foreground">
+            Not enough data for solve rate
+          </p>
+        )}
 
         {/* Price + CTA */}
         <div className="flex items-center justify-between gap-2 pt-2">

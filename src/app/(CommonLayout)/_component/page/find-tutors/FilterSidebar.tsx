@@ -1,21 +1,32 @@
 "use client";
 
-import { Categories, Filters, FiltersStateProp } from "@/types";
+import { Categories, Filters, FiltersStateProp, TaxonomyItem } from "@/types";
 
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type FiltersSidebarProps = FiltersStateProp & {
   categories: Categories[];
+  subjects: TaxonomyItem[];
+  skills: TaxonomyItem[];
 };
 
 export default function FiltersSidebar({
   filters,
   setFilters,
   categories,
+  subjects,
+  skills,
 }: FiltersSidebarProps) {
   const minPriceValue = Number(filters.minPrice ?? "0");
   const maxPriceValue = Number(filters.maxPrice ?? "1000");
@@ -56,6 +67,55 @@ export default function FiltersSidebar({
           >
             Reset All
           </Button>
+        </div>
+
+        {/* Instant availability */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            Availability
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              variant={
+                filters.availableToday === "true" ? "default" : "outline"
+              }
+              onClick={() =>
+                setFilters((prev: Filters) => ({
+                  ...prev,
+                  availableToday:
+                    prev.availableToday === "true" ? undefined : "true",
+                  page: "1",
+                }))
+              }
+              className={
+                filters.availableToday === "true"
+                  ? "bg-brand text-white hover:bg-brand-strong"
+                  : ""
+              }
+            >
+              Available today
+            </Button>
+            <Button
+              type="button"
+              variant={filters.availableNow === "true" ? "default" : "outline"}
+              onClick={() =>
+                setFilters((prev: Filters) => ({
+                  ...prev,
+                  availableNow:
+                    prev.availableNow === "true" ? undefined : "true",
+                  page: "1",
+                }))
+              }
+              className={
+                filters.availableNow === "true"
+                  ? "bg-brand text-white hover:bg-brand-strong"
+                  : ""
+              }
+            >
+              Within 2 hours
+            </Button>
+          </div>
         </div>
 
         {/* Category filter */}
@@ -108,6 +168,64 @@ export default function FiltersSidebar({
               );
             })}
           </RadioGroup>
+        </div>
+
+        {/* Subject filter */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            Subject
+          </h3>
+          <Select
+            value={filters.subjectId ?? "all"}
+            onValueChange={(value) =>
+              setFilters((prev: Filters) => ({
+                ...prev,
+                subjectId: value === "all" ? undefined : value,
+                page: "1",
+              }))
+            }
+          >
+            <SelectTrigger className="w-full rounded-xl">
+              <SelectValue placeholder="All subjects" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All subjects</SelectItem>
+              {subjects.map((subject) => (
+                <SelectItem key={subject.id} value={subject.id}>
+                  {subject.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Skill filter */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            Skill
+          </h3>
+          <Select
+            value={filters.skillId ?? "all"}
+            onValueChange={(value) =>
+              setFilters((prev: Filters) => ({
+                ...prev,
+                skillId: value === "all" ? undefined : value,
+                page: "1",
+              }))
+            }
+          >
+            <SelectTrigger className="w-full rounded-xl">
+              <SelectValue placeholder="All skills" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All skills</SelectItem>
+              {skills.map((skill) => (
+                <SelectItem key={skill.id} value={skill.id}>
+                  {skill.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Price range slider */}
