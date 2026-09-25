@@ -30,6 +30,7 @@ import {
 } from "@/action/booking.action";
 import SendClassLinkSheet from "./SendClassLinkSheet";
 import CompleteSessionSheet from "./CompleteSessionSheet";
+import TutorSummarySheet from "./TutorSummarySheet";
 import {
   getDefaultClassLink,
   sendClassLink,
@@ -61,6 +62,10 @@ export default function TutorSessionClient({
   const [completeSessionSheetOpen, setCompleteSessionSheetOpen] =
     useState(false);
   const [completedSession, setCompletedSession] =
+    useState<TutorBookingSession | null>(null);
+
+  const [summarySheetOpen, setSummarySheetOpen] = useState(false);
+  const [summarySession, setSummarySession] =
     useState<TutorBookingSession | null>(null);
 
   let randomId = uuidv7();
@@ -131,6 +136,7 @@ export default function TutorSessionClient({
   const confirmCompletedSession = async () => {
     if (!completedSession) return;
 
+    const finishedSession = completedSession;
     const toastId = toast.loading("Marking session as completed...");
     try {
       const response = await updateBookingStatus(
@@ -146,12 +152,21 @@ export default function TutorSessionClient({
       await loadSessions();
 
       setActiveSession(null);
+
+      // Non-blocking: prompt the tutor to leave a short summary.
+      setSummarySession(finishedSession);
+      setSummarySheetOpen(true);
     } catch {
       toast.error("Failed to mark session as completed", { id: toastId });
     }
 
     setCompleteSessionSheetOpen(false);
     setCompletedSession(null);
+  };
+
+  const openSummarySheet = (session: TutorBookingSession) => {
+    setSummarySession(session);
+    setSummarySheetOpen(true);
   };
 
   const openCompleteSessionSheet = (session: TutorBookingSession) => {
@@ -164,8 +179,10 @@ export default function TutorSessionClient({
     setCompletedSession(null);
   };
 
-  const openInNewTab = (randomId: string) => {
-    const url = `/class/${randomId}`;
+  const openInNewTab = (randomId: string, bookingId?: string) => {
+    const url = bookingId
+      ? `/class/${randomId}?bookingId=${bookingId}`
+      : `/class/${randomId}`;
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
@@ -179,7 +196,7 @@ export default function TutorSessionClient({
         setClassLink("");
         setSheetOpen(true);
         setSheetSession(session);
-        openInNewTab(randomId);
+        openInNewTab(randomId, session.id);
         return;
       }
       toast.error(
@@ -191,7 +208,7 @@ export default function TutorSessionClient({
     setClassLink("");
     setSheetOpen(true);
     setSheetSession(session);
-    openInNewTab(randomId);
+    openInNewTab(randomId, session.id);
   };
 
   const sendLink = async (classLink: string) => {
@@ -268,6 +285,7 @@ export default function TutorSessionClient({
                       openCompleteSessionSheet={() =>
                         openCompleteSessionSheet(session)
                       }
+                      openSummarySheet={() => openSummarySheet(session)}
                     />
                   ))
                 )}
@@ -301,6 +319,7 @@ export default function TutorSessionClient({
                       openCompleteSessionSheet={() =>
                         openCompleteSessionSheet(session)
                       }
+                      openSummarySheet={() => openSummarySheet(session)}
                     />
                   ))
                 )}
@@ -324,6 +343,13 @@ export default function TutorSessionClient({
         completedSession={completedSession}
         dismissCompleteSessionSheet={dismissCompleteSessionSheet}
         confirmCompletedSession={confirmCompletedSession}
+      />
+
+      <TutorSummarySheet
+        open={summarySheetOpen}
+        setOpen={setSummarySheetOpen}
+        session={summarySession}
+        onSaved={loadSessions}
       />
     </>
   );

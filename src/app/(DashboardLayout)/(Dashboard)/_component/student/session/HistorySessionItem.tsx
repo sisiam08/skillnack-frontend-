@@ -7,10 +7,12 @@ import { convertInto12h } from "@/helpers/TimeHelpers";
 import { StudentBookings } from "@/types";
 import { format } from "date-fns";
 import { MessageSquare } from "lucide-react";
+import SessionOutcomeControl from "@/components/shared/SessionOutcomeControl";
 
 type HistorySessionItemProps = {
   session: StudentBookings;
   openReviewSheet: (session: StudentBookings) => void;
+  onOutcomeRecorded?: () => void;
 };
 
 const hasReview = (session: StudentBookings) => Boolean(session.reviews);
@@ -18,6 +20,7 @@ const hasReview = (session: StudentBookings) => Boolean(session.reviews);
 export default function HistorySessionItem({
   session,
   openReviewSheet,
+  onOutcomeRecorded,
 }: HistorySessionItemProps) {
   return (
     <div className="rounded-xl border bg-muted/20 p-3 space-y-3">
@@ -56,6 +59,29 @@ export default function HistorySessionItem({
         <MessageSquare className="mr-2 size-4" />
         {hasReview(session) ? "See Review" : "Review Session"}
       </Button>
+
+      {session.status === BookingStatus.COMPLETED ? (
+        <SessionOutcomeControl
+          bookingId={session.id}
+          outcome={session.outcome}
+          onRecorded={onOutcomeRecorded}
+          className="space-y-1"
+        />
+      ) : null}
+
+      {session.summary ? (
+        <div className="space-y-1 rounded-lg border bg-background p-3">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Tutor summary
+          </p>
+          <p className="whitespace-pre-wrap text-sm">{session.summary}</p>
+          {session.summaryUpdatedAt ? (
+            <p className="text-[11px] text-muted-foreground">
+              Updated {format(new Date(session.summaryUpdatedAt), "MMM dd, yyyy")}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }

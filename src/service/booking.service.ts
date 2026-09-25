@@ -1,23 +1,21 @@
 import { BookingStatus } from "@/constants/status";
 import { env } from "@/env";
-import { BookingsFilters, BookingSlot, ServiceOptions } from "@/types";
+import { BookingsFilters, ServiceOptions, SessionOutcome } from "@/types";
 import { cookies } from "next/headers";
 
 const API_URL = env.API_URL;
 export const BOOKING_REVALIDATE = 20;
 
 export const BookingService = {
-  createBooking: async (tutorId: string, bookingData: BookingSlot) => {
-    console.log();
+  createBooking: async (formData: FormData) => {
     try {
       const cookieStore = await cookies();
       const res = await fetch(`${API_URL}/bookings`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Cookie: cookieStore.toString(),
         },
-        body: JSON.stringify({ tutorId, ...bookingData }),
+        body: formData,
       });
       const data = await res.json();
 
@@ -176,6 +174,125 @@ export const BookingService = {
         data,
         error: null,
       };
+    } catch (error: any) {
+      return {
+        data: null,
+        error: { message: error.message || "Something went wrong!" },
+      };
+    }
+  },
+
+  updateBookingSummary: async (bookingId: string, summary: string) => {
+    try {
+      const cookieStore = await cookies();
+      const res = await fetch(`${API_URL}/bookings/${bookingId}/summary`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieStore.toString(),
+        },
+        body: JSON.stringify({ summary }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data?.success) {
+        return {
+          data: null,
+          error: { message: data?.message || "Failed to save summary!" },
+        };
+      }
+
+      return { data, error: null };
+    } catch (error: any) {
+      return {
+        data: null,
+        error: { message: error.message || "Something went wrong!" },
+      };
+    }
+  },
+
+  getBookingRequestInfo: async (bookingId: string) => {
+    try {
+      const cookieStore = await cookies();
+      const cookieHeader = cookieStore.toString();
+
+      const detailRes = await fetch(`${API_URL}/bookings/${bookingId}`, {
+        headers: { Cookie: cookieHeader },
+        cache: "no-store",
+      });
+
+      if (detailRes.ok) {
+        const data = await detailRes.json();
+        if (data?.success) {
+          return {
+            data: {
+              title: data.data?.title ?? null,
+              description: data.data?.description ?? null,
+              attachments: (data.data?.attachments ?? []) as string[],
+            },
+            error: null,
+          };
+        }
+      }
+
+      // Tutors cannot read /bookings/:id; fall back to their own session list.
+      const listRes = await fetch(
+        `${API_URL}/tutors/bookings?page=1&limit=100`,
+        {
+          headers: { Cookie: cookieHeader },
+          cache: "no-store",
+        },
+      );
+      const listData = await listRes.json();
+      const found = listData?.data?.data?.data?.find(
+        (booking: { id: string }) => booking.id === bookingId,
+      );
+
+      if (!found) {
+        return { data: null, error: { message: "Booking not found" } };
+      }
+
+      return {
+        data: {
+          title: found.title ?? null,
+          description: found.description ?? null,
+          attachments: (found.attachments ?? []) as string[],
+        },
+        error: null,
+      };
+    } catch (error: any) {
+      return {
+        data: null,
+        error: { message: error.message || "Something went wrong!" },
+      };
+    }
+  },
+
+  recordOutcome: async (bookingId: string, outcome: SessionOutcome) => {
+    try {
+      const cookieStore = await cookies();
+      const res = await fetch(`${API_URL}/bookings/${bookingId}/outcome`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieStore.toString(),
+        },
+        body: JSON.stringify({ outcome }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data?.success) {
+        return {
+          data: null,
+          error: {
+            message: data?.message || "Failed to record outcome!",
+          },
+        };
+      }
+
+      return { data, error: null };
     } catch (error: any) {
       return {
         data: null,

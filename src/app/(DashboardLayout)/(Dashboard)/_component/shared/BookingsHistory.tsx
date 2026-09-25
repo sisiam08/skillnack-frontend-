@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import {
   Card,
   CardContent,
@@ -26,8 +26,14 @@ import {
   ChevronDown,
   ChevronUp,
   MessageSquare,
+  Paperclip,
 } from "lucide-react";
-import { Bookings, BookingsFilters, PaginationType } from "@/types";
+import {
+  Bookings,
+  BookingsFilters,
+  PaginationType,
+  SessionOutcome,
+} from "@/types";
 import { BookingStatus } from "@/constants/status";
 import { convertInto12h } from "@/helpers/TimeHelpers";
 import { format } from "date-fns";
@@ -85,6 +91,46 @@ const getStatusBadge = (status: BookingStatus) => {
   }
 };
 
+const getAttachmentName = (url: string) => {
+  try {
+    const decoded = decodeURIComponent(url.split("/").pop() ?? "attachment");
+    const withoutPrefix = decoded.replace(/^[a-z0-9]+-\d+-/i, "");
+    return withoutPrefix.length > 28
+      ? `${withoutPrefix.slice(0, 25)}...`
+      : withoutPrefix;
+  } catch {
+    return "attachment";
+  }
+};
+
+const getOutcomeBadge = (outcome: SessionOutcome) => {
+  switch (outcome) {
+    case "SOLVED":
+      return (
+        <Badge className="mt-1 bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
+          <CheckCircle className="mr-1 h-3 w-3" />
+          Solved
+        </Badge>
+      );
+    case "PARTIALLY_SOLVED":
+      return (
+        <Badge className="mt-1 bg-amber-100 text-amber-700 hover:bg-amber-100">
+          <Activity className="mr-1 h-3 w-3" />
+          Partially solved
+        </Badge>
+      );
+    case "NOT_SOLVED":
+      return (
+        <Badge className="mt-1 bg-red-600 text-white hover:bg-red-600">
+          <XCircle className="mr-1 h-3 w-3" />
+          Not solved
+        </Badge>
+      );
+    default:
+      return null;
+  }
+};
+
 export default function BookingsHistory({
   role,
   bookings,
@@ -94,11 +140,17 @@ export default function BookingsHistory({
   expandedReview,
   setExpandedReview,
 }: BookingsHistoryProps) {
+  const [expandedRequest, setExpandedRequest] = useState<string | null>(null);
+
   const totalColumns =
-    6 + (role !== UserRole.STUDENT ? 1 : 0) + (role !== UserRole.TUTOR ? 1 : 0);
+    7 + (role !== UserRole.STUDENT ? 1 : 0) + (role !== UserRole.TUTOR ? 1 : 0);
 
   const toggleReview = (bookingId: string) => {
     setExpandedReview(expandedReview === bookingId ? null : bookingId);
+  };
+
+  const toggleRequest = (bookingId: string) => {
+    setExpandedRequest(expandedRequest === bookingId ? null : bookingId);
   };
 
   const handlePageChange = (nextPage: number) => {
@@ -316,6 +368,7 @@ export default function BookingsHistory({
                       <TableHead className="text-center">Tutor</TableHead>
                     ) : null}
                     <TableHead className="text-center">Category</TableHead>
+                    <TableHead className="text-center">Request</TableHead>
                     <TableHead className="text-center">Session Date</TableHead>
                     <TableHead className="text-center">Session Time</TableHead>
                     <TableHead className="text-center">Price</TableHead>
@@ -365,6 +418,29 @@ export default function BookingsHistory({
                           </Badge>
                         </TableCell>
                         <TableCell className="text-center">
+                          {booking.title || booking.description ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => toggleRequest(booking.id)}
+                              className="gap-1"
+                            >
+                              <span className="max-w-32 truncate">
+                                {booking.title || "View request"}
+                              </span>
+                              {expandedRequest === booking.id ? (
+                                <ChevronUp className="h-4 w-4" />
+                              ) : (
+                                <ChevronDown className="h-4 w-4" />
+                              )}
+                            </Button>
+                          ) : (
+                            <span className="text-sm text-muted-foreground">
+                              No details
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-center">
                           {format(new Date(booking.sessionDate), "PP")}
                         </TableCell>
                         <TableCell className="text-center">
@@ -375,7 +451,12 @@ export default function BookingsHistory({
                           ৳{booking.price}
                         </TableCell>
                         <TableCell className="text-center">
-                          {getStatusBadge(booking.status as BookingStatus)}
+                          <div className="flex flex-col items-center">
+                            {getStatusBadge(booking.status as BookingStatus)}
+                            {booking.outcome
+                              ? getOutcomeBadge(booking.outcome)
+                              : null}
+                          </div>
                         </TableCell>
                         <TableCell className="text-center">
                           {booking.reviews ? (
@@ -435,6 +516,57 @@ export default function BookingsHistory({
                           </TableCell>
                         </TableRow>
                       )}
+
+                      {expandedRequest === booking.id &&
+                        (booking.title || booking.description) && (
+                          <TableRow className="bg-muted/30 hover:bg-muted/30">
+                            <TableCell colSpan={totalColumns} className="p-4">
+                              <div className="space-y-3 rounded-lg border bg-background p-4">
+                                <div className="flex flex-wrap items-center gap-3">
+                                  {booking.goalType ? (
+                                    <Badge
+                                      variant="secondary"
+                                      className="text-[10px] uppercase tracking-wide"
+                                    >
+                                      {booking.goalType === "SOLVE_PROBLEM"
+                                        ? "Solve a problem"
+                                        : "Learn a topic"}
+                                    </Badge>
+                                  ) : null}
+                                  {booking.title ? (
+                                    <span className="font-semibold">
+                                      {booking.title}
+                                    </span>
+                                  ) : null}
+                                </div>
+
+                                {booking.description ? (
+                                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                                    {booking.description}
+                                  </p>
+                                ) : null}
+
+                                {booking.attachments &&
+                                booking.attachments.length > 0 ? (
+                                  <div className="flex flex-wrap gap-2">
+                                    {booking.attachments.map((url) => (
+                                      <a
+                                        key={url}
+                                        href={url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1 rounded-full border bg-background px-2 py-1 text-xs text-brand hover:bg-brand/5"
+                                      >
+                                        <Paperclip className="h-3 w-3" />
+                                        {getAttachmentName(url)}
+                                      </a>
+                                    ))}
+                                  </div>
+                                ) : null}
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        )}
                     </Fragment>
                   ))}
                 </TableBody>

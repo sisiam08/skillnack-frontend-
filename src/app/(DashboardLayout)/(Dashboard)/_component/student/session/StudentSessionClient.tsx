@@ -330,6 +330,7 @@ export default function StudentSessionClient({
                       key={session.id}
                       session={session}
                       openReviewSheet={openReviewSheet}
+                      onOutcomeRecorded={loadSessions}
                     />
                   ))
               )}
@@ -416,6 +417,7 @@ export default function StudentSessionClient({
                 key={session.id}
                 session={session}
                 openReviewSheet={() => openReviewSheet(session)}
+                onOutcomeRecorded={loadSessions}
               />
             ))}
           </div>

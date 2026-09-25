@@ -1,6 +1,22 @@
 import { User } from "better-auth";
 
-export type TutorBookingSession = {
+export type BookingGoalType = "SOLVE_PROBLEM" | "LEARN_TOPIC";
+
+export type SessionOutcome = "SOLVED" | "PARTIALLY_SOLVED" | "NOT_SOLVED";
+
+export type BookingRequestFields = {
+  title?: string | null;
+  description?: string | null;
+  goalType?: BookingGoalType | null;
+  attachments?: string[];
+  outcome?: SessionOutcome | null;
+  outcomeAt?: string | null;
+  summary?: string | null;
+  summaryAt?: string | null;
+  summaryUpdatedAt?: string | null;
+};
+
+export type TutorBookingSession = BookingRequestFields & {
   id: string;
   studentId: string;
   tutorId: string;
@@ -17,7 +33,7 @@ export type TutorBookingSession = {
   };
 };
 
-export type StudentBookings = {
+export type StudentBookings = BookingRequestFields & {
   id: string;
   studentId: string;
   tutorId: string;
@@ -58,7 +74,7 @@ export type StudentSessionBuckets = {
   completedCount: number;
 };
 
-export type Bookings = {
+export type Bookings = BookingRequestFields & {
   id: string;
   sessionDate: string;
   startTime: string;

@@ -1,16 +1,10 @@
 "use server";
 
 import { BookingService } from "@/service/booking.service";
-import { BookingsFilters, BookingSlot, ServiceOptions } from "@/types";
+import { BookingsFilters, ServiceOptions, SessionOutcome } from "@/types";
 
-export const createBooking = async (
-  tutorId: string,
-  bookingData: BookingSlot,
-) => {
-  const { data, error } = await BookingService.createBooking(
-    tutorId,
-    bookingData,
-  );
+export const createBooking = async (formData: FormData) => {
+  const { data, error } = await BookingService.createBooking(formData);
 
   return { data, error };
 };
@@ -44,6 +38,30 @@ export const getMyBookings = async (
 
 export const getBookingSessions = async (filters?: BookingsFilters) => {
   const { data, error } = await BookingService.getBookingSessions(filters);
+
+  return { data, error };
+};
+
+export const updateBookingSummary = async (
+  bookingId: string,
+  summary: string,
+) => {
+  const { data, error } = await BookingService.updateBookingSummary(
+    bookingId,
+    summary,
+  );
+
+  return { data, error };
+};
+
+export const recordOutcome = async (
+  bookingId: string,
+  outcome: SessionOutcome,
+) => {
+  const { data, error } = await BookingService.recordOutcome(
+    bookingId,
+    outcome,
+  );
 
   return { data, error };
 };

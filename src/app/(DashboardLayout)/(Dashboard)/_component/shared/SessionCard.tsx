@@ -14,12 +14,26 @@ import {
   ExternalLink,
   GraduationCap,
   MessageSquare,
+  NotebookPen,
+  Paperclip,
   Trash2,
   UserRound,
   Video,
   XCircle,
 } from "lucide-react";
 import Link from "next/link";
+
+const getAttachmentName = (url: string) => {
+  try {
+    const decoded = decodeURIComponent(url.split("/").pop() ?? "attachment");
+    const withoutPrefix = decoded.replace(/^[a-z0-9]+-\d+-/i, "");
+    return withoutPrefix.length > 28
+      ? `${withoutPrefix.slice(0, 25)}...`
+      : withoutPrefix;
+  } catch {
+    return "attachment";
+  }
+};
 
 type SessionCardProps = {
   session: TutorBookingSession | StudentBookings;
@@ -29,6 +43,7 @@ type SessionCardProps = {
   openReviewSheet?: () => void;
   startClass?: () => void;
   openCompleteSessionSheet?: () => void;
+  openSummarySheet?: () => void;
   handleCancelSession?: (session: StudentBookings) => void;
 };
 
@@ -39,6 +54,7 @@ export default function SessionCard({
   openReviewSheet,
   startClass,
   openCompleteSessionSheet,
+  openSummarySheet,
   handleCancelSession,
 }: SessionCardProps) {
   const isStudentRole = role === UserRole.STUDENT;
@@ -113,6 +129,49 @@ export default function SessionCard({
             </Badge>
           </div>
         </div>
+
+        {(session.title || session.description) && (
+          <div className="space-y-2 rounded-lg border border-border/70 bg-muted/20 p-3">
+            <div className="flex flex-wrap items-center gap-2">
+              {session.goalType ? (
+                <Badge
+                  variant="secondary"
+                  className="text-[10px] uppercase tracking-wide"
+                >
+                  {session.goalType === "SOLVE_PROBLEM"
+                    ? "Solve a problem"
+                    : "Learn a topic"}
+                </Badge>
+              ) : null}
+              {session.title ? (
+                <p className="text-sm font-semibold">{session.title}</p>
+              ) : null}
+            </div>
+
+            {session.description ? (
+              <p className="whitespace-pre-wrap text-sm text-muted-foreground">
+                {session.description}
+              </p>
+            ) : null}
+
+            {session.attachments && session.attachments.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {session.attachments.map((url) => (
+                  <a
+                    key={url}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-2 py-1 text-xs text-brand hover:bg-brand/5"
+                  >
+                    <Paperclip className="size-3" />
+                    {getAttachmentName(url)}
+                  </a>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        )}
 
         {isStudentRole ? (
           studentSession?.classLink ? (
@@ -193,13 +252,23 @@ export default function SessionCard({
             </Button>
           </div>
         ) : tutorSession?.status === BookingStatus.COMPLETED ? (
-          <Button
-            className="bg-emerald-600 text-white hover:bg-emerald-700 font-normal"
-            disabled
-          >
-            <CircleCheckBig className="mr-2 size-4" />
-            Class Completed
-          </Button>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button
+              className="bg-emerald-600 text-white hover:bg-emerald-700 font-normal"
+              disabled
+            >
+              <CircleCheckBig className="mr-2 size-4" />
+              Class Completed
+            </Button>
+            <Button
+              variant="outline"
+              className="border-brand/30 text-brand hover:bg-brand/5 hover:text-brand-strong font-normal"
+              onClick={openSummarySheet}
+            >
+              <NotebookPen className="mr-2 size-4" />
+              {session.summary ? "Edit summary" : "Add summary"}
+            </Button>
+          </div>
         ) : tutorSession?.status === BookingStatus.CANCELLED ? (
           <Button
             variant="outline"

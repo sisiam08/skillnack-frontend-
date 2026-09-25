@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { CheckCircle2, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Paperclip, ShieldCheck, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { getAvailableSlots } from "@/action/availability.action";
@@ -16,6 +16,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   Select,
   SelectContent,
@@ -25,10 +27,15 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/sonner";
 import { convertInto12h } from "@/helpers/TimeHelpers";
-import { AvailableSlotType, SlotType } from "@/types";
-import { redirect, useRouter } from "next/navigation";
+import { AvailableSlotType, BookingGoalType, SlotType } from "@/types";
+import { useRouter } from "next/navigation";
 
-const DURATION_OPTIONS = [60, 120, 180];
+const DURATION_OPTIONS = [30, 60, 120, 180];
+const MAX_ATTACHMENTS = 5;
+const MAX_TITLE_LENGTH = 100;
+const MAX_DESCRIPTION_LENGTH = 1000;
+const ATTACHMENT_ACCEPT =
+  "image/*,.pdf,.txt,.doc,.docx,.ppt,.pptx,text/*,application/pdf";
 
 const getSlotMinutes = (time: string) => {
   const [hour, minute] = time.split(":").map(Number);
@@ -36,6 +43,9 @@ const getSlotMinutes = (time: string) => {
 };
 
 const formatDuration = (minutes: number) => {
+  if (minutes < 60) {
+    return `${minutes} minutes`;
+  }
   const hours = minutes / 60;
   return `${hours} ${hours === 1 ? "hour" : "hours"}`;
 };
@@ -58,6 +68,11 @@ export default function TutorBookingPanel({
   const [selectedSlot, setSelectedSlot] = useState<SlotType | null>(null);
   const [needsNewSlotSelection, setNeedsNewSlotSelection] = useState(false);
   const [isBooking, setIsBooking] = useState(false);
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [goalType, setGoalType] = useState<BookingGoalType | "">("");
+  const [attachments, setAttachments] = useState<File[]>([]);
 
   const today = format(new Date(), "yyyy-MM-dd");
 
@@ -149,23 +164,65 @@ export default function TutorBookingPanel({
     setNeedsNewSlotSelection(false);
   };
 
+  const handleAttachmentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(event.target.files ?? []);
+    event.target.value = "";
+
+    if (selected.length === 0) return;
+
+    setAttachments((prev) => {
+      const merged = [...prev];
+
+      for (const file of selected) {
+        if (merged.length >= MAX_ATTACHMENTS) {
+          toast.error(`You can attach up to ${MAX_ATTACHMENTS} files.`);
+          break;
+        }
+
+        const isDuplicate = merged.some(
+          (existing) =>
+            existing.name === file.name && existing.size === file.size,
+        );
+
+        if (!isDuplicate) {
+          merged.push(file);
+        }
+      }
+
+      return merged;
+    });
+  };
+
+  const removeAttachment = (index: number) => {
+    setAttachments((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const bookingSession = async () => {
     if (!selectedSlot || !selectedDate) return;
 
+    if (!title.trim() || !description.trim()) {
+      toast.error("Please add a title and description before booking.");
+      return;
+    }
+
     const now = new Date();
-    const bookingData = {
-      sessionDate: selectedDate,
-      startTime: selectedSlot.startTime,
-      endTime: selectedSlot.endTime,
-      currentTime: format(now, "HH:mm"),
-      todayDate: format(now, "yyyy-MM-dd"),
-    };
+    const formData = new FormData();
+    formData.append("tutorId", tutorId);
+    formData.append("sessionDate", selectedDate);
+    formData.append("startTime", selectedSlot.startTime);
+    formData.append("endTime", selectedSlot.endTime);
+    formData.append("title", title.trim());
+    formData.append("description", description.trim());
+    if (goalType) formData.append("goalType", goalType);
+    formData.append("currentTime", format(now, "HH:mm"));
+    formData.append("todayDate", format(now, "yyyy-MM-dd"));
+    attachments.forEach((file) => formData.append("attachments", file));
 
     const toastId = toast.loading("Booking your session...");
     setIsBooking(true);
 
     try {
-      const response = await createBooking(tutorId, bookingData);
+      const response = await createBooking(formData);
 
       if (!response?.data || response?.error) {
         toast.error(response?.error?.message || "Failed to create booking", {
@@ -174,26 +231,27 @@ export default function TutorBookingPanel({
         return;
       }
 
-      console.log("Booking response: ", response);
+      const paymentUrl = response.data.data?.paymentUrl;
 
-      // redirect to payment page
-      router.push(response.data.data.paymentUrl);
-
-      if (!response.data.data.paymentUrl) {
+      if (!paymentUrl) {
         toast.error("Failed to initiate payment", {
           id: toastId,
         });
         return;
       }
 
-      if (response.data.data.paymentUrl) {
-        toast.success("Session booked successfully", { id: toastId });
-      }
+      toast.success("Session booked successfully", { id: toastId });
+      router.push(paymentUrl);
+
       setSelectedDate("");
       setSelectedDuration("");
       setSelectedSlot(null);
       setNeedsNewSlotSelection(false);
       setAvailableSlots(null);
+      setTitle("");
+      setDescription("");
+      setGoalType("");
+      setAttachments([]);
     } catch {
       toast.error("An error occurred while booking the session", {
         id: toastId,
@@ -204,7 +262,11 @@ export default function TutorBookingPanel({
   };
 
   const isBookingReady = Boolean(
-    selectedDate && selectedDuration && selectedSlot,
+    selectedDate &&
+      selectedDuration &&
+      selectedSlot &&
+      title.trim() &&
+      description.trim(),
   );
 
   return (
@@ -243,9 +305,105 @@ export default function TutorBookingPanel({
               </div>
             </div>
 
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Step 1: What do you need help with?
+              </p>
+
+              <div className="space-y-1">
+                <Input
+                  value={title}
+                  maxLength={MAX_TITLE_LENGTH}
+                  placeholder="Short title (e.g. Help with binary trees)"
+                  onChange={(event) => setTitle(event.target.value)}
+                  className="border-input bg-background text-foreground"
+                />
+                <p className="text-right text-[11px] text-muted-foreground">
+                  {title.length}/{MAX_TITLE_LENGTH}
+                </p>
+              </div>
+
+              <ToggleGroup
+                type="single"
+                value={goalType}
+                onValueChange={(value) =>
+                  setGoalType((value as BookingGoalType) || "")
+                }
+                className="flex w-full rounded-xl border border-input bg-background p-1"
+              >
+                <ToggleGroupItem
+                  value="SOLVE_PROBLEM"
+                  className="flex-1 rounded-lg text-xs font-semibold data-[state=on]:bg-brand data-[state=on]:text-white"
+                >
+                  Solve a problem
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  value="LEARN_TOPIC"
+                  className="flex-1 rounded-lg text-xs font-semibold data-[state=on]:bg-brand data-[state=on]:text-white"
+                >
+                  Learn a topic
+                </ToggleGroupItem>
+              </ToggleGroup>
+
+              <div className="space-y-1">
+                <Textarea
+                  value={description}
+                  maxLength={MAX_DESCRIPTION_LENGTH}
+                  rows={4}
+                  placeholder="Describe the problem or topic so your tutor can prepare before the session..."
+                  onChange={(event) => setDescription(event.target.value)}
+                  className="border-input bg-background text-foreground"
+                />
+                <p className="text-right text-[11px] text-muted-foreground">
+                  {description.length}/{MAX_DESCRIPTION_LENGTH}
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="flex cursor-pointer items-center justify-between rounded-lg border border-dashed border-border px-3 py-2 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-2">
+                    <Paperclip className="size-3.5" />
+                    Attach files (optional)
+                  </span>
+                  <span className="font-medium text-brand">
+                    {attachments.length}/{MAX_ATTACHMENTS}
+                  </span>
+                  <input
+                    type="file"
+                    multiple
+                    accept={ATTACHMENT_ACCEPT}
+                    className="hidden"
+                    onChange={handleAttachmentChange}
+                    disabled={attachments.length >= MAX_ATTACHMENTS}
+                  />
+                </label>
+
+                {attachments.length > 0 ? (
+                  <ul className="space-y-1">
+                    {attachments.map((file, index) => (
+                      <li
+                        key={`${file.name}-${file.size}`}
+                        className="flex items-center justify-between gap-2 rounded-md border bg-muted/30 px-2 py-1 text-xs"
+                      >
+                        <span className="truncate">{file.name}</span>
+                        <button
+                          type="button"
+                          aria-label={`Remove ${file.name}`}
+                          onClick={() => removeAttachment(index)}
+                          className="text-muted-foreground hover:text-destructive"
+                        >
+                          <X className="size-3.5" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            </div>
+
             <div className="space-y-2">
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Step 1: Select Date
+                Step 2: Select Date
               </p>
               <Input
                 type="date"
@@ -258,7 +416,7 @@ export default function TutorBookingPanel({
 
             <div className="space-y-2">
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Step 2: Select Duration
+                Step 3: Select Duration
               </p>
               <Select value={selectedDuration} onValueChange={updateDuration}>
                 <SelectTrigger className="w-full border-input bg-background text-foreground">
@@ -276,7 +434,7 @@ export default function TutorBookingPanel({
 
             <div className="space-y-3 rounded-xl border border-border bg-muted/30 p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Step 3: Matching Availability
+                Step 4: Matching Availability
               </p>
 
               {selectedDuration ? (
@@ -375,7 +533,7 @@ export default function TutorBookingPanel({
                 ? "Processing..."
                 : isBookingReady
                   ? "Confirm Booking"
-                  : "Select a time slot"}
+                  : "Add details & slot"}
             </Button>
 
             <div className="flex items-center justify-center gap-4 text-[11px] text-muted-foreground">
