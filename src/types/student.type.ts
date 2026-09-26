@@ -1,3 +1,13 @@
+export type StudentSpendPoint = {
+  month: string;
+  amount: number;
+};
+
+export type StudentCategoryDemand = {
+  category: string;
+  count: number;
+};
+
 export type StudentStats = {
   totalBookings: number;
   monthlyBookings: number;
@@ -5,6 +15,8 @@ export type StudentStats = {
   completionRate: number;
   totalSpent: number;
   refundableAmount: number;
+  spendByMonth: StudentSpendPoint[];
+  sessionsByCategory: StudentCategoryDemand[];
 };
 
 export type StudentRecentActivity = {

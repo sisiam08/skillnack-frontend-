@@ -8,6 +8,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { TutorService } from "@/service/tutor.service";
 import { TutorStats } from "@/types";
+import { BarChart, DonutChart, TrendLineChart } from "@/components/charts";
 import { format } from "date-fns";
 import {
   Banknote,
@@ -46,15 +47,16 @@ export default async function TutorDashboardPage() {
       cancelledThisMonth: 0,
       upcoming: 0,
     },
+    outcomes: {
+      solved: 0,
+      partiallySolved: 0,
+      notSolved: 0,
+    },
+    ratingTrend: [],
   };
 
   const weeklyEarnings: { weekDay: string; earnings: number }[] =
     earningsResponse.data?.data ?? [];
-
-  const maxWeekly =
-    weeklyEarnings.length > 0
-      ? Math.max(...weeklyEarnings.map((d) => d.earnings))
-      : 1;
 
   const earningsStats = [
     {
@@ -131,6 +133,12 @@ export default async function TutorDashboardPage() {
     },
   ];
 
+  const outcomeData = [
+    { name: "Solved", value: stats.outcomes.solved },
+    { name: "Partially solved", value: stats.outcomes.partiallySolved },
+    { name: "Not solved", value: stats.outcomes.notSolved },
+  ];
+
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6 p-4">
       <Card className="overflow-hidden border-border/70 bg-linear-to-r from-orange-50 via-white to-amber-50 dark:from-card dark:via-card dark:to-card">
@@ -199,41 +207,67 @@ export default async function TutorDashboardPage() {
         <Card className="xl:col-span-3">
           <CardHeader className="pb-2">
             <CardTitle>Weekly Earnings</CardTitle>
-            <CardDescription>This week earnings summary</CardDescription>
+            <CardDescription>This week&apos;s earnings by day</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3 pt-2">
-            {weeklyEarnings.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                No earnings data available.
-              </p>
-            ) : (
-              weeklyEarnings.map((day) => {
-                const percentageofEarnings =
-                  maxWeekly > 0
-                    ? Math.round((day.earnings / maxWeekly) * 100)
-                    : 0;
-                return (
-                  <div key={day.weekDay} className="flex items-center gap-3">
-                    <span className="w-8 shrink-0 text-right text-xs font-medium text-muted-foreground">
-                      {day.weekDay}
-                    </span>
-                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-muted">
-                      <div
-                        className="h-full rounded-full bg-brand transition-all"
-                        style={{ width: `${percentageofEarnings}%` }}
-                      />
-                    </div>
-                    <span className="w-24 shrink-0 text-right text-xs font-semibold">
-                      {day.earnings}৳
-                    </span>
-                  </div>
-                );
-              })
-            )}
+          <CardContent className="pt-2">
+            <BarChart
+              data={weeklyEarnings}
+              xKey="weekDay"
+              series={[
+                {
+                  key: "earnings",
+                  label: "Earnings (৳)",
+                  color: "var(--brand)",
+                },
+              ]}
+              valueFormat="taka"
+              emptyMessage="No earnings this week"
+            />
           </CardContent>
         </Card>
 
-        <div className="flex flex-col gap-4 xl:col-span-2">
+        <Card className="xl:col-span-2">
+          <CardHeader className="pb-2">
+            <CardTitle>Session Outcomes</CardTitle>
+            <CardDescription>How your sessions are resolving</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-2">
+            <DonutChart
+              data={outcomeData}
+              nameKey="name"
+              valueKey="value"
+              colors={["var(--chart-2)", "var(--chart-4)", "var(--chart-5)"]}
+              valueFormat="number"
+              emptyMessage="No session outcomes recorded yet"
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
+        <Card className="xl:col-span-2">
+          <CardHeader className="pb-2">
+            <CardTitle>Rating Trend</CardTitle>
+            <CardDescription>Average review rating by month</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-2">
+            <TrendLineChart
+              data={stats.ratingTrend}
+              xKey="month"
+              series={[
+                {
+                  key: "averageRating",
+                  label: "Avg. rating",
+                  color: "var(--chart-3)",
+                },
+              ]}
+              valueFormat="decimal1"
+              emptyMessage="Not enough review history yet"
+            />
+          </CardContent>
+        </Card>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 xl:col-span-3">
           {sessionStats.map((item, idx) => (
             <Card
               key={item.title}

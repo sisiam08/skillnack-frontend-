@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ModeToggle } from "@/components/shared/ModeToggle";
-import { useTheme } from "next-themes";
+import { Menu, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { authClient } from "@/lib/auth-client";
 import Logo from "./Logo";
 
 function useMobileMenu() {
@@ -25,13 +27,24 @@ function useMobileMenu() {
   };
 }
 
-export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
-  const { resolvedTheme } = useTheme();
+export default function Navbar() {
+  // Read the session on the client so the public layout stays static (no cookies()
+  // in the RSC tree), which lets the landing and info pages be statically rendered.
+  const { data: session } = authClient.useSession();
+  const isLoggedIn = Boolean(session?.user);
   const [mounted, setMounted] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { mobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useMobileMenu();
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   if (!mounted) {
@@ -43,7 +56,14 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
     "rounded-xl px-3 py-3 text-sm font-medium text-brand-ink dark:text-brand-ink transition-colors duration-200 hover:text-brand-strong dark:hover:text-brand";
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-[color-mix(in_oklab,var(--background)_86%,#fff7ed)]/90 dark:bg-card backdrop-blur-md border-b border-brand/10 dark:border-brand/20">
+    <nav
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 w-full border-b backdrop-blur-md transition-[background-color,box-shadow,border-color,backdrop-filter] duration-300",
+        scrolled
+          ? "border-gray-200/60 bg-white/85 shadow-md backdrop-blur-lg dark:border-white/10 dark:bg-slate-950/85"
+          : "border-gray-200/50 bg-white/70 shadow-sm dark:border-white/10 dark:bg-slate-950/70",
+      )}
+    >
       <div className="relative max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16 md:h-18">
           {/* Logo */}
@@ -96,9 +116,11 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
             onClick={toggleMobileMenu}
             className="md:hidden flex items-center p-2 hover:text-brand transition-colors"
           >
-            <span className="material-symbols-outlined text-brand-ink dark:text-white">
-              {mobileMenuOpen ? "close" : "menu"}
-            </span>
+            {mobileMenuOpen ? (
+              <X className="size-6 text-brand-ink dark:text-white" />
+            ) : (
+              <Menu className="size-6 text-brand-ink dark:text-white" />
+            )}
           </button>
           {mobileMenuOpen && (
             <div className="absolute left-4 right-4 top-full z-50 mt-3 rounded-2xl border border-border/70 bg-card p-4 shadow-xl md:hidden">
@@ -114,9 +136,7 @@ export default function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
                     onClick={closeMobileMenu}
                     className="p-2 hover:text-brand transition-colors"
                   >
-                    <span className="material-symbols-outlined text-xl text-brand-ink dark:text-white">
-                      close
-                    </span>
+                    <X className="size-5 text-brand-ink dark:text-white" />
                   </button>
                 </div>
               </div>

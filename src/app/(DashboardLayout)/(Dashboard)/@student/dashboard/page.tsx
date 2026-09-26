@@ -7,16 +7,13 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  BookOpenCheck,
-  CalendarCheck2,
-  CheckCircle2,
-  CircleDollarSign,
-} from "lucide-react";
+import { BookOpenCheck, CalendarCheck2, CheckCircle2 } from "lucide-react";
+import TakaIcon from "@/components/shared/TakaIcon";
 import Link from "next/link";
 import { format } from "date-fns";
 import { StudentService } from "@/service/student.service";
 import { StudentStats, StudentRecentActivity } from "@/types";
+import { BarChart, TrendLineChart } from "@/components/charts";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +26,8 @@ export default async function StudentDashboardPage() {
     completionRate: 0,
     totalSpent: 0,
     refundableAmount: 0,
+    spendByMonth: [],
+    sessionsByCategory: [],
   };
 
   const recentActivityResponse =
@@ -57,13 +56,13 @@ export default async function StudentDashboardPage() {
       title: "Learning Spend",
       value: `৳ ${studentStats.totalSpent}`,
       note: "Across all bookings",
-      icon: CircleDollarSign,
+      icon: TakaIcon,
     },
     {
       title: "Refundable Amount",
       value: `৳ ${studentStats.refundableAmount}`,
       note: "Across cancelled bookings",
-      icon: CircleDollarSign,
+      icon: TakaIcon,
     },
   ];
 
@@ -137,6 +136,46 @@ export default async function StudentDashboardPage() {
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
+        <Card className="lg:col-span-3">
+          <CardHeader className="pb-2">
+            <CardTitle>Learning Spend</CardTitle>
+            <CardDescription>
+              Paid spend over the last 6 months
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <TrendLineChart
+              data={studentStats.spendByMonth}
+              xKey="month"
+              series={[
+                { key: "amount", label: "Spent (৳)", color: "var(--brand)" },
+              ]}
+              valueFormat="taka"
+              emptyMessage="No payments yet"
+            />
+          </CardContent>
+        </Card>
+
+        <Card className="lg:col-span-2">
+          <CardHeader className="pb-2">
+            <CardTitle>Sessions by Category</CardTitle>
+            <CardDescription>Where your learning is focused</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <BarChart
+              data={studentStats.sessionsByCategory}
+              xKey="category"
+              series={[
+                { key: "count", label: "Sessions", color: "var(--chart-2)" },
+              ]}
+              horizontal
+              emptyMessage="No sessions yet"
+            />
+          </CardContent>
+        </Card>
       </div>
 
       <div>

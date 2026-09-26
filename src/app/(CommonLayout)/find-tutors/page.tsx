@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { CategoryService } from "@/service/category.service";
 import { TutorService } from "@/service/tutor.service";
 import { SubjectService } from "@/service/subject.service";
@@ -5,6 +6,13 @@ import { SkillService } from "@/service/skill.service";
 import { PaginationType, TutorProfile } from "@/types";
 
 import TutorsClient from "../_component/page/find-tutors/TutorsClient";
+
+export const metadata: Metadata = {
+  title: "Find Tutors",
+  description:
+    "Browse verified Ilmefy tutors by subject, skill, price, rating, and availability. Book focused 1-on-1 online sessions and pay per session.",
+  alternates: { canonical: "/find-tutors" },
+};
 
 const FALLBACK_PAGINATION: PaginationType = {
   totalData: 0,

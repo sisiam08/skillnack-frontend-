@@ -1,15 +1,19 @@
-import { UserService } from "@/service/user.service";
 import Footer from "./_component/shared/Footer";
 import Navbar from "./_component/shared/Navbar";
 
-export default async function CommonLayout({
+export default function CommonLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await UserService.getSession();
+  // Intentionally no `cookies()`/session read here: keeping this layout static
+  // lets the landing and info pages be statically rendered/ISR. The Navbar reads
+  // the session on the client.
+  // NOTE: `overflow-x-clip` (not `overflow-hidden`) so the fixed Navbar is not
+  // trapped inside a non-scrolling overflow container. The decorative blobs are
+  // clipped by their own absolute `inset-0 overflow-hidden` wrapper below.
   return (
-    <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-orange-50 via-amber-50/60 to-white dark:from-zinc-950 dark:via-zinc-950 dark:to-zinc-900 text-foreground transition-colors duration-200">
+    <div className="relative min-h-screen overflow-x-clip bg-linear-to-br from-orange-50 via-amber-50/60 to-white dark:from-zinc-950 dark:via-zinc-950 dark:to-zinc-900 text-foreground transition-colors duration-200">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         {/* Original 3 colors only: ORANGE, AMBER, TEAL */}
         
@@ -29,8 +33,9 @@ export default async function CommonLayout({
         </div>
       
       <div className="relative z-10">
-        <Navbar isLoggedIn={!!session.data} />
-        <main>{children}</main>
+        <Navbar />
+        {/* Offset for the fixed Navbar (h-16 mobile / h-18 md) so content is not hidden. */}
+        <main className="pt-16 md:pt-18">{children}</main>
         <Footer />
       </div>
     </div>

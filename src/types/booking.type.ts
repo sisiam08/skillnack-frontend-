@@ -81,6 +81,7 @@ export type Bookings = BookingRequestFields & {
   endTime: string;
   price: number;
   status: string;
+  paymentStatus?: string | null;
   tutor: {
     user: {
       name: string;

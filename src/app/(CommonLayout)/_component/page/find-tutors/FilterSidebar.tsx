@@ -133,7 +133,7 @@ export default function FiltersSidebar({
                 page: "1",
               }))
             }
-            className="flex flex-col gap-2"
+            className="flex max-h-52 flex-col gap-2 overflow-y-auto overscroll-contain pr-2"
           >
             {categories.map((cat: Categories, index) => {
               const categoryName = cat.name?.trim();

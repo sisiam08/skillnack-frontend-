@@ -15,6 +15,12 @@ export default function Logo({ width, height, h }: { width?: number; height?: nu
 
   if (!mounted) return null;
 
+  // SVG viewBox is 720x350 (wordmark only). Tailwind spacing unit = 4px.
+  const renderedHeight = h ? h * 4 : height || 56;
+  const renderedWidth = width || Math.round((renderedHeight * 720) / 350);
+
+  // Size purely via the intrinsic width/height props (no CSS override) so
+  // next/image does not warn about a modified width/height.
   return (
     <Link href="/">
       <Image
@@ -24,9 +30,8 @@ export default function Logo({ width, height, h }: { width?: number; height?: nu
             : "/ilmefy_name-light.svg"
         }
         alt="Ilmefy"
-        width={width || 100}
-        height={height || 56}
-        className={h ? `w-auto h-${h}` : "w-auto h-14"}
+        width={renderedWidth}
+        height={renderedHeight}
         priority
       />
     </Link>

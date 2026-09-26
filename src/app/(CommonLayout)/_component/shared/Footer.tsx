@@ -2,31 +2,28 @@ import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import Logo from "./Logo";
 
+// Cleaned up: previous columns (Explore / For Students / For Tutors) duplicated
+// navbar links (Home, How it Works, Login, Register, Find Tutors, Dashboard) and
+// were removed. These columns link only to pages that exist.
 const navLinks = [
   {
-    title: "Explore",
+    title: "Company",
     links: [
-      { label: "Find Tutors", href: "/find-tutors" },
-      { label: "How It Works", href: "/#how-it-works" },
-      { label: "Login", href: "/login" },
-      { label: "Sign Up", href: "/signup" },
+      { label: "About Us", href: "/about" },
+      { label: "Contact", href: "/contact" },
     ],
   },
   {
-    title: "For Students",
+    title: "Legal",
     links: [
-      { label: "Find a Tutor", href: "/find-tutors" },
-      { label: "Book a Session", href: "/find-tutors" },
-      { label: "Student Dashboard", href: "/dashboard" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms & Conditions", href: "/terms" },
+      { label: "Refund & Cancellation", href: "/refund-policy" },
     ],
   },
   {
-    title: "For Tutors",
-    links: [
-      { label: "Become a Tutor", href: "/signup" },
-      { label: "Tutor Dashboard", href: "/tutor-dashboard" },
-      { label: "Manage Availability", href: "/tutor-dashboard/availability" },
-    ],
+    title: "Support",
+    links: [{ label: "FAQ / Help Center", href: "/faq" }],
   },
 ];
 
@@ -34,10 +31,10 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="mt-16 border-t border-brand/10 bg-[color-mix(in_oklab,var(--background)_88%,#fff7ed)] pb-10 pt-16 dark:border-brand/25 dark:bg-card">
+    <footer className="mt-10 border-t border-brand/10 bg-[color-mix(in_oklab,var(--background)_88%,#fff7ed)] pt-8 pb-6 dark:border-brand/25 dark:bg-card">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
-          <div className="space-y-4">
+        <div className="grid gap-6 sm:grid-cols-2 sm:gap-8 md:grid-cols-4">
+          <div className="space-y-3">
             <Logo height={88} h={22} />
 
             <p className="text-sm leading-relaxed text-muted-foreground">
@@ -48,10 +45,10 @@ export default function Footer() {
 
           {navLinks.map((section) => (
             <div key={section.title}>
-              <h4 className="mb-5 text-sm font-bold text-brand-ink dark:text-brand-ink">
+              <h4 className="mb-3 text-sm font-bold text-brand-ink dark:text-brand-ink">
                 {section.title}
               </h4>
-              <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
+              <ul className="flex flex-col gap-2 text-sm text-muted-foreground">
                 {section.links.map(({ label, href }) => (
                   <li key={label}>
                     <Link
@@ -67,9 +64,9 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="mt-12">
+        <div className="mt-8">
           <Separator className="bg-brand/15 dark:bg-brand/25" />
-          <div className="flex items-center justify-center pt-8 text-xs text-muted-foreground md:flex-row">
+          <div className="flex items-center justify-center pt-4 text-xs text-muted-foreground md:flex-row">
             <p>&copy; {currentYear} Ilmefy. All rights reserved.</p>
           </div>
         </div>

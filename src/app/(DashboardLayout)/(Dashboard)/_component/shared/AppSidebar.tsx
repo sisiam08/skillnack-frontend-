@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 
 import {
@@ -30,7 +30,24 @@ export function AppSidebar({
   user: { role: string } & React.ComponentProps<typeof Sidebar>;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   let routes: Routes = { items: [] };
+
+  // Root dashboard routes must match exactly; nested routes match by prefix so
+  // e.g. /dashboard/history/abc highlights "History" but /dashboard itself does
+  // not get highlighted while on /dashboard/history.
+  const isItemActive = (url: string) => {
+    const isDashboardRoot =
+      url === "/dashboard" ||
+      url === "/tutor-dashboard" ||
+      url === "/admin-dashboard";
+
+    if (isDashboardRoot) {
+      return pathname === url;
+    }
+
+    return pathname === url || pathname.startsWith(`${url}/`);
+  };
 
   switch (user.role) {
     case UserRole.ADMIN:
@@ -64,8 +81,16 @@ export function AppSidebar({
           <SidebarGroup key={item.title}>
             <SidebarMenu>
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild title={item.title}>
-                  <a href={item.url}>{item.title}</a>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isItemActive(item.url)}
+                  title={item.title}
+                  className="data-[active=true]:bg-brand/10 data-[active=true]:text-brand data-[active=true]:font-semibold data-[active=true]:shadow-[inset_2px_0_0_0_var(--brand)] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                >
+                  <a href={item.url}>
+                    {item.icon ? <item.icon /> : null}
+                    <span>{item.title}</span>
+                  </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

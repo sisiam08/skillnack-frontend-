@@ -75,7 +75,8 @@ export default function TutorCard({
               src={tutor.user?.image || DEFAULT_AVATAR}
               alt={tutor.user?.name ?? "Tutor"}
               fill
-              unoptimized
+              sizes="64px"
+              quality={80}
               className="object-cover transition-transform duration-300 group-hover:scale-110"
             />
           </div>
@@ -159,7 +160,7 @@ export default function TutorCard({
         {/* Price + CTA */}
         <div className="flex items-center justify-between gap-2 pt-2">
           <div className="text-sm font-bold text-foreground">
-            Tk {tutor.hourlyRate}
+            ৳{tutor.hourlyRate}
             <span className="text-xs font-normal text-muted-foreground">
               {" "}
               / hr

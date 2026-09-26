@@ -1,4 +1,4 @@
-import Class from "../../_component/Class";
+import ClassDynamic from "../../_component/ClassDynamic";
 import { UserService } from "@/service/user.service";
 import { BookingService } from "@/service/booking.service";
 
@@ -30,7 +30,7 @@ export default async function ClassPage({ params, searchParams }: ClassPageProps
   }
 
   return (
-    <Class
+    <ClassDynamic
       classID={classID!}
       userID={id}
       userName={name}

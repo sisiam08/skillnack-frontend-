@@ -27,6 +27,7 @@ import {
   ChevronUp,
   MessageSquare,
   Paperclip,
+  CreditCard,
 } from "lucide-react";
 import {
   Bookings,
@@ -91,6 +92,42 @@ const getStatusBadge = (status: BookingStatus) => {
   }
 };
 
+const getPaymentBadge = (status?: string | null) => {
+  switch (status) {
+    case "PAID":
+      return (
+        <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
+          <CreditCard className="mr-1 h-3 w-3" />
+          Paid
+        </Badge>
+      );
+    case "PENDING":
+      return (
+        <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100">
+          <AlertCircle className="mr-1 h-3 w-3" />
+          Pending
+        </Badge>
+      );
+    case "FAILED":
+      return (
+        <Badge className="bg-red-100 text-red-700 hover:bg-red-100">
+          <XCircle className="mr-1 h-3 w-3" />
+          Failed
+        </Badge>
+      );
+    case "REFUNDED":
+    case "REFUNDABLE":
+      return (
+        <Badge variant="secondary">
+          <CreditCard className="mr-1 h-3 w-3" />
+          {status === "REFUNDED" ? "Refunded" : "Refundable"}
+        </Badge>
+      );
+    default:
+      return <span className="text-sm text-muted-foreground">—</span>;
+  }
+};
+
 const getAttachmentName = (url: string) => {
   try {
     const decoded = decodeURIComponent(url.split("/").pop() ?? "attachment");
@@ -142,8 +179,14 @@ export default function BookingsHistory({
 }: BookingsHistoryProps) {
   const [expandedRequest, setExpandedRequest] = useState<string | null>(null);
 
+  // Payment status is shown to admins and tutors (not on the student's own history).
+  const showPayment = role !== UserRole.STUDENT;
+
   const totalColumns =
-    7 + (role !== UserRole.STUDENT ? 1 : 0) + (role !== UserRole.TUTOR ? 1 : 0);
+    7 +
+    (role !== UserRole.STUDENT ? 1 : 0) +
+    (role !== UserRole.TUTOR ? 1 : 0) +
+    (showPayment ? 1 : 0);
 
   const toggleReview = (bookingId: string) => {
     setExpandedReview(expandedReview === bookingId ? null : bookingId);
@@ -372,6 +415,9 @@ export default function BookingsHistory({
                     <TableHead className="text-center">Session Date</TableHead>
                     <TableHead className="text-center">Session Time</TableHead>
                     <TableHead className="text-center">Price</TableHead>
+                    {showPayment ? (
+                      <TableHead className="text-center">Payment</TableHead>
+                    ) : null}
                     <TableHead className="text-center">Status</TableHead>
                     <TableHead className="text-center">Reviews</TableHead>
                   </TableRow>
@@ -450,6 +496,11 @@ export default function BookingsHistory({
                         <TableCell className="text-center font-semibold">
                           ৳{booking.price}
                         </TableCell>
+                        {showPayment ? (
+                          <TableCell className="text-center">
+                            {getPaymentBadge(booking.paymentStatus)}
+                          </TableCell>
+                        ) : null}
                         <TableCell className="text-center">
                           <div className="flex flex-col items-center">
                             {getStatusBadge(booking.status as BookingStatus)}

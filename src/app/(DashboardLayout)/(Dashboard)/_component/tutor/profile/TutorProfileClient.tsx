@@ -1,6 +1,6 @@
 "use client";
 
-import { type ChangeEvent, type KeyboardEvent, useRef, useState } from "react";
+import { type ChangeEvent, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,6 @@ import {
   Save,
   ShieldAlert,
   UserRound,
-  X,
 } from "lucide-react";
 import { updateUser } from "@/action/user.action";
 import { createTutorProfile, updateTutorProfile } from "@/action/tutor.action";
@@ -59,7 +58,6 @@ const AccountSchema = z.object({
 const ProfessionalSchema = z.object({
   categoryId: z.string().min(1, "Category is required"),
   bio: z.string().max(255, "Bio must be at most 255 characters"),
-  tags: z.array(z.string()),
   subjectIds: z.array(z.string()),
   skillIds: z.array(z.string()),
   headline: z.string().max(100, "Headline must be at most 100 characters"),
@@ -125,7 +123,6 @@ export default function TutorProfileClient({
   const [tutorData, setTutorData] = useState<TutorProfile | undefined>(
     initialTutorProfile,
   );
-  const [tagInput, setTagInput] = useState("");
 
   const hasProfile = Boolean(tutorData);
 
@@ -210,7 +207,6 @@ export default function TutorProfileClient({
     defaultValues: {
       categoryId: tutorData?.categoriesId || "",
       bio: tutorData?.bio || "",
-      tags: tutorData?.tags || [],
       subjectIds: tutorData?.subjects?.map((subject) => subject.id) || [],
       skillIds: tutorData?.skills?.map((skill) => skill.id) || [],
       headline: tutorData?.headline || "",
@@ -231,7 +227,6 @@ export default function TutorProfileClient({
         userId,
         categoriesId: value.categoryId,
         bio: value.bio,
-        tags: value.tags,
         subjectIds: value.subjectIds,
         skillIds: value.skillIds,
         headline: value.headline || null,
@@ -246,7 +241,6 @@ export default function TutorProfileClient({
       const updatePayload = {
         categoriesId: value.categoryId || undefined,
         bio: value.bio || undefined,
-        tags: value.tags,
         subjectIds: value.subjectIds,
         skillIds: value.skillIds,
         headline: value.headline || undefined,
@@ -340,10 +334,6 @@ export default function TutorProfileClient({
                     );
                     professionalForm.setFieldValue("bio", tutorData.bio || "");
                     professionalForm.setFieldValue(
-                      "tags",
-                      tutorData.tags || [],
-                    );
-                    professionalForm.setFieldValue(
                       "subjectIds",
                       tutorData.subjects?.map((subject) => subject.id) || [],
                     );
@@ -371,7 +361,6 @@ export default function TutorProfileClient({
                       "portfolioUrl",
                       tutorData.portfolioUrl || "",
                     );
-                    setTagInput("");
                     professionalForm.setFieldValue(
                       "experienceYears",
                       tutorData.experienceYears?.toString() || "",
@@ -730,129 +719,6 @@ export default function TutorProfileClient({
                     )}
                   </div>
 
-                  <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="tags">Tags</Label>
-                    {isFormEditMode ? (
-                      <professionalForm.Field
-                        name="tags"
-                        children={(field) => {
-                          const isInvalid =
-                            field.state.meta.isTouched &&
-                            !field.state.meta.isValid;
-
-                          const addTag = (rawTag: string) => {
-                            const normalizedTag = rawTag.trim();
-                            if (!normalizedTag) {
-                              return;
-                            }
-
-                            const exists = field.state.value.some(
-                              (tag) =>
-                                tag.toLowerCase() ===
-                                normalizedTag.toLowerCase(),
-                            );
-
-                            if (!exists) {
-                              field.handleChange([
-                                ...field.state.value,
-                                normalizedTag,
-                              ]);
-                            }
-                          };
-
-                          const removeTag = (indexToRemove: number) => {
-                            field.handleChange(
-                              field.state.value.filter(
-                                (_, index) => index !== indexToRemove,
-                              ),
-                            );
-                          };
-
-                          const handleTagKeyDown = (
-                            event: KeyboardEvent<HTMLInputElement>,
-                          ) => {
-                            if (
-                              event.key === " " ||
-                              event.key === "Enter" ||
-                              event.key === ","
-                            ) {
-                              event.preventDefault();
-                              addTag(tagInput);
-                              setTagInput("");
-                            }
-
-                            if (
-                              event.key === "Backspace" &&
-                              !tagInput &&
-                              field.state.value.length > 0
-                            ) {
-                              removeTag(field.state.value.length - 1);
-                            }
-                          };
-
-                          return (
-                            <Field>
-                              <div className="rounded-md border border-input px-2 py-2">
-                                <div className="mb-2 flex flex-wrap gap-2">
-                                  {field.state.value.map((tag, index) => (
-                                    <Badge
-                                      key={`${tag}-${index}`}
-                                      variant="secondary"
-                                      className="gap-1"
-                                    >
-                                      {tag}
-                                      <button
-                                        type="button"
-                                        aria-label={`Remove ${tag}`}
-                                        className="rounded-full p-0.5 hover:bg-muted"
-                                        onClick={() => removeTag(index)}
-                                      >
-                                        <X
-                                          className="size-3"
-                                          suppressHydrationWarning
-                                        />
-                                      </button>
-                                    </Badge>
-                                  ))}
-                                </div>
-
-                                <Input
-                                  id="tags"
-                                  placeholder="Type tag and press space"
-                                  value={tagInput}
-                                  disabled={isFormDisableMode}
-                                  className="border-0 p-1 shadow-none focus-visible:ring-0"
-                                  onKeyDown={handleTagKeyDown}
-                                  onChange={(e) => setTagInput(e.target.value)}
-                                  onBlur={() => {
-                                    if (tagInput.trim()) {
-                                      addTag(tagInput);
-                                      setTagInput("");
-                                    }
-                                  }}
-                                />
-                              </div>
-                              {isInvalid && (
-                                <FieldError errors={field.state.meta.errors} />
-                              )}
-                            </Field>
-                          );
-                        }}
-                      />
-                    ) : tutorData?.tags?.length ? (
-                      <div className="flex flex-wrap gap-2 rounded-md border bg-muted/30 px-3 py-2">
-                        {tutorData.tags.map((tag) => (
-                          <Badge key={tag} variant="secondary">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="rounded-md border bg-muted/30 px-3 py-2 text-sm font-medium">
-                        -
-                      </p>
-                    )}
-                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="experience">Experience (Years)</Label>
                     {isFormEditMode ? (

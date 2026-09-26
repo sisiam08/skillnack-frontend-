@@ -187,3 +187,29 @@
     display: none;
   }
 }
+
+/* Homepage scroll reveal (see components/shared/Reveal.tsx).
+   Subtle fade-up, runs once, disabled under prefers-reduced-motion. */
+@layer utilities {
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 350ms ease-out,
+      transform 350ms ease-out;
+  }
+
+  .reveal-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .reveal-visible {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+}

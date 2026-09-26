@@ -7,6 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PaginationProps } from "@/types";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const LIMIT_OPTIONS = [5, 10, 20, 50];
 
@@ -75,7 +76,7 @@ export default function Pagination({
           onClick={() => handlePageChange(page - 1)}
           className="flex size-10 items-center justify-center rounded-lg border border-primary/10 bg-white dark:bg-background text-slate-700 dark:text-slate-200 transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <span className="material-symbols-outlined">chevron_left</span>
+          <ChevronLeft className="size-4" />
         </Button>
 
         {/* Pages */}
@@ -117,7 +118,7 @@ export default function Pagination({
           onClick={() => handlePageChange(page + 1)}
           className="flex size-10 items-center justify-center rounded-lg border border-primary/10 bg-white dark:bg-background text-slate-700 dark:text-slate-200 transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <span className="material-symbols-outlined">chevron_right</span>
+          <ChevronRight className="size-4" />
         </Button>
       </div>
     </div>

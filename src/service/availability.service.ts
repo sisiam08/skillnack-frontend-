@@ -7,12 +7,8 @@ const API_URL = env.API_URL;
 export const AvailabilityService = {
   getAvailability: async (tutorId: string) => {
     try {
-      const cookieStore = await cookies();
-      const res = await fetch(`${API_URL}/tutors/${tutorId}/availability`, {
-        headers: {
-          Cookie: cookieStore.toString(),
-        },
-      });
+      // Public endpoint: no auth needed -> cacheable (ISR).
+      const res = await fetch(`${API_URL}/tutors/${tutorId}/availability`);
 
       const data = await res.json();
 
@@ -38,14 +34,9 @@ export const AvailabilityService = {
     slotDuration: string,
   ) => {
     try {
-      const cookieStore = await cookies();
+      // Public endpoint: no auth needed -> cacheable (ISR).
       const res = await fetch(
         `${API_URL}/tutors/${tutorId}/availableSlots/?selectedDate=${selectedDate}&slotDuration=${slotDuration}`,
-        {
-          headers: {
-            Cookie: cookieStore.toString(),
-          },
-        },
       );
       const data = await res.json();
 

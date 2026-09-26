@@ -1,5 +1,5 @@
 import { env } from "@/env";
-import { TutorsFilter, UsersFilter } from "@/types";
+import { AdminAnalyticsRange, TutorsFilter, UsersFilter } from "@/types";
 import { cookies } from "next/headers";
 
 const API_URL = env.API_URL;
@@ -109,6 +109,41 @@ export const AdminService = {
           message:
             error?.message ||
             "An error occurred while fetching dashboard stats",
+        },
+      };
+    }
+  },
+
+  getAdminAnalytics: async (range: AdminAnalyticsRange = "30d") => {
+    try {
+      const cookieStore = await cookies();
+      const res = await fetch(`${API_URL}/admin/analytics?range=${range}`, {
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
+        cache: "no-store",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        return {
+          data: null,
+          error: {
+            message: data?.message || "Failed to fetch analytics",
+          },
+        };
+      }
+
+      return { data, error: null };
+    } catch (error) {
+      return {
+        data: null,
+        error: {
+          message:
+            error instanceof Error
+              ? error.message
+              : "An error occurred while fetching analytics",
         },
       };
     }

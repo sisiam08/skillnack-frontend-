@@ -56,7 +56,8 @@ export type TutorProfileCreateData = {
   bio?: string | null;
   hourlyRate: number;
   experienceYears: number;
-  tags: string[];
+  /** Legacy free-text tags — no longer written from the UI. */
+  tags?: string[];
   subjectIds?: string[];
   skillIds?: string[];
   headline?: string | null;
@@ -104,4 +105,14 @@ export type TutorStats = {
     cancelledThisMonth: number;
     upcoming: number;
   };
+  outcomes: {
+    solved: number;
+    partiallySolved: number;
+    notSolved: number;
+  };
+  ratingTrend: {
+    month: string;
+    averageRating: number;
+    reviewCount: number;
+  }[];
 };

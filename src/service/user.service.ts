@@ -1,12 +1,15 @@
 import { env } from "@/env";
 import { UserUpdate } from "@/types";
 import { cookies } from "next/headers";
+import { cache } from "react";
 
 const AUTH_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth`;
 const API_URL = env.API_URL;
 
 export const UserService = {
-  getSession: async function () {
+  // Memoized per request (React cache) so layout + page + services that all read
+  // the session do not each call /api/auth/get-session within one render.
+  getSession: cache(async function () {
     try {
       const cookieStore = await cookies();
 
@@ -40,7 +43,7 @@ export const UserService = {
         },
       };
     }
-  },
+  }),
 
   updateUser: async function (userData: UserUpdate, imageFile?: File | null) {
     try {

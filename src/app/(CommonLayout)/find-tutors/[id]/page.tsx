@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { TutorService } from "@/service/tutor.service";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +15,47 @@ import Reviews from "../../_component/page/find-tutors/id/Reviews";
 
 const DEFAULT_AVATAR = "/default-avatar-profile.jpg";
 
-export const revalidate = 300;
+export const revalidate = 60;
+
+export async function generateMetadata({
+  params,
+}: ParamsProps): Promise<Metadata> {
+  const { id } = await params;
+  const response = await TutorService.getTutorById(id);
+  const tutor = response.data?.data;
+
+  if (!tutor) {
+    return {
+      title: "Tutor Profile",
+      description: "View tutor profiles on Ilmefy.",
+      alternates: { canonical: `/find-tutors/${id}` },
+    };
+  }
+
+  const name = tutor.user?.name ?? "Tutor";
+  const category = tutor.category?.name ?? "Tutoring";
+  const title = `${name} — ${category} Tutor`;
+  const description =
+    (tutor.bio && tutor.bio.trim()) ||
+    `Book ${name}, an experienced ${category} tutor on Ilmefy. Focused 1-on-1 online sessions, pay per session.`;
+
+  return {
+    title,
+    description: description.slice(0, 160),
+    alternates: { canonical: `/find-tutors/${id}` },
+    openGraph: {
+      title,
+      description: description.slice(0, 160),
+      url: `/find-tutors/${id}`,
+      type: "profile",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: description.slice(0, 160),
+    },
+  };
+}
 
 export default async function TutorProfileDetailPage({ params }: ParamsProps) {
   const { id: tutorId } = await params;
@@ -49,6 +90,44 @@ export default async function TutorProfileDetailPage({ params }: ParamsProps) {
       ? Math.round(((tutorDetails?.solvedCount ?? 0) / totalOutcomes) * 100)
       : null;
 
+  const siteUrl =
+    process.env.NEXT_PUBLIC_FRONTEND_URL ?? "http://localhost:3000";
+
+  const tutorJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: tutorDetails?.user?.name ?? "Tutor",
+    jobTitle: `${tutorDetails?.category?.name ?? "Tutoring"} Tutor`,
+    description: tutorDetails?.bio || undefined,
+    image: tutorDetails?.user?.image || undefined,
+    url: `${siteUrl}/find-tutors/${tutorId}`,
+    knowsAbout: [
+      ...(tutorDetails?.subjects?.map((subject) => subject.name) ?? []),
+      ...(tutorDetails?.skills?.map((skill) => skill.name) ?? []),
+    ],
+    ...(tutorDetails?.totalReviews
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: avgRating,
+            reviewCount: tutorDetails.totalReviews,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
+    ...(tutorDetails?.hourlyRate
+      ? {
+          makesOffer: {
+            "@type": "Offer",
+            price: tutorDetails.hourlyRate,
+            priceCurrency: "BDT",
+            category: "1-on-1 online tutoring",
+          },
+        }
+      : {}),
+  };
+
   const expertiseTags = Array.from(
     new Set(
       [
@@ -62,6 +141,10 @@ export default async function TutorProfileDetailPage({ params }: ParamsProps) {
 
   return (
     <main className="relative min-h-screen overflow-hidden pb-28 pt-8 lg:pb-14">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(tutorJsonLd) }}
+      />
       <div className="relative mx-auto w-full max-w-7xl px-4 ">
         <div className="grid space-y-6 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_390px]">
           <section className="space-y-6">
@@ -73,7 +156,8 @@ export default async function TutorProfileDetailPage({ params }: ParamsProps) {
                       src={tutorDetails?.user?.image ?? DEFAULT_AVATAR}
                       alt={tutorDetails?.user?.name ?? "Tutor profile"}
                       fill
-                      unoptimized
+                      sizes="(max-width: 640px) 96px, 112px"
+                      quality={80}
                       className="object-cover"
                       suppressHydrationWarning
                     />
